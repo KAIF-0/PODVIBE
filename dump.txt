@@ -1,0 +1,209 @@
+const [offer, setOffer] = useState({ sdp: "", type: "" });
+  const [negoOffer, setNegoOffer] = useState({ sdp: "", type: "" });
+  const [answer, setAnswer] = useState({ sdp: "", type: "" });
+  const [negoAnswer, setNegoAnswer] = useState({ sdp: "", type: "" });
+  const [myStream, setMyStream] = useState(null);
+  const [remoteStream, setRemoteStream] = useState(null);
+
+  const handleClick = useCallback(async () => {
+    try {
+      const constraints = {
+        audio: { echoCancellation: true },
+        video: {
+          width: { min: 1280 },
+          height: { min: 720 },
+        },
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      setMyStream(stream);
+      const videoElement = document.querySelector("video#webCam");
+      if (videoElement) videoElement.srcObject = stream;
+
+      const videoCameras = await navigator.mediaDevices
+        .enumerateDevices()
+        .then((devices) =>
+          devices.filter((device) => device.kind === "videoinput")
+        );
+      console.log("Cameras found:", videoCameras);
+    } catch (error) {
+      console.error("Error opening video camera.", error);
+    }
+  }, []);
+
+  const handleCreateCall = useCallback(async () => {
+    try {
+      const offer = await peer.getOffer();
+      await databases.createDocument(
+        "66b8d3c00006c7c5b16d",
+        "66ce117b002b80b38d78",
+        ID.unique(),
+        {
+          sdp: offer.sdp,
+          type: offer.type,
+        }
+      );
+    } catch (err) {
+      console.error("Error creating call:", err);
+    }
+  }, []);
+
+  const handleJoinCall = useCallback(async () => {
+    try {
+      const ans = await peer.getAnswer(offer);
+      await databases.createDocument(
+        "66b8d3c00006c7c5b16d",
+        "66ce117b002b80b38d78",
+        ID.unique(),
+        {
+          sdp: ans.sdp,
+          type: ans.type,
+        }
+      );
+    } catch (error) {
+      console.error("Error joining call:", error);
+    }
+  }, [offer]);
+
+  const handleAcceptCall = useCallback(async () => {
+    try {
+      await peer.setLocalDescription(answer);
+      console.log("Call Accepted!");
+      handleSendStream();
+    } catch (error) {
+      console.error("Error accepting call:", error);
+    }
+  }, [answer]);
+
+  const handleSendStream = useCallback(() => {
+    if (!myStream) return;
+  
+    for (const track of myStream.getTracks()) {
+      peer.peer.addTrack(track, myStream); // Add track to the peer connection
+    }
+  }, [myStream]);
+
+  useEffect(() => {
+    const handleSubscription = async (response) => {
+      const { events, payload } = response;
+      if (events.includes("databases.*.collections.*.documents.*.create")) {
+        const { type, isNego, sdp } = payload;
+        if (type === "offer" && !isNego) {
+          setOffer((prev) => ({ ...prev, sdp, type }));
+        } else if (type === "answer" && !isNego) {
+          setAnswer((prev) => ({ ...prev, sdp, type }));
+        } else if (isNego && type === "offer") {
+          setNegoOffer((prev) => ({ ...prev, sdp, type }));
+          const offer = {
+            sdp,
+            type
+          };
+          handleNegoIncoming(offer);
+        } else if (isNego && type === "answer") {
+          setNegoAnswer((prev) => ({ ...prev, sdp, type }));
+          const answer = {
+            sdp,
+            type
+          };
+          // handleNegoFinal(answer);
+        }
+      }
+    };
+
+    const unsubscribe = client.subscribe(
+      `databases.66b8d3c00006c7c5b16d.collections.66ce117b002b80b38d78.documents`,
+      handleSubscription
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const handleNegoNeeded = useCallback(async () => {
+    try {
+      const off = await peer.getOffer();
+      console.log("Nego Needed!");
+      await databases.createDocument(
+        "66b8d3c00006c7c5b16d",
+        "66ce117b002b80b38d78",
+        ID.unique(),
+        {
+          sdp: off.sdp,
+          type: off.type,
+          isNego: true,
+        }
+      );
+    } catch (error) {
+      console.error("Error during negotiation:", error);
+    }
+  }, []);
+
+  const handleNegoIncoming = useCallback(async (offer) => {
+    try {
+      const ans = await peer.getAnswer(offer);
+      await databases.createDocument(
+        "66b8d3c00006c7c5b16d",
+        "66ce117b002b80b38d78",
+        ID.unique(),
+        {
+          sdp: ans.sdp,
+          type: ans.type,
+          isNego: true,
+        }
+      );
+      handleSendStream();
+    } catch (error) {
+      console.error("Error handling incoming negotiation:", error);
+    }
+  }, [handleSendStream]);
+
+  const handleNegoFinal = useCallback(async () => {
+    try {
+      if (peer.peer.signalingState !== 'have-local-offer') {
+        console.warn('Cannot finalize negotiation, wrong signaling state:', peer.peer.signalingState);
+        return;
+      }
+      console.log(negoAnswer);
+      await peer.setLocalDescription(negoAnswer);
+      console.log("Nego Done!");
+      handleSendStream();
+    } catch (error) {
+      console.error("Error finalizing negotiation:", error);
+    }
+  }, [negoAnswer, handleSendStream]);
+
+  useEffect(() => {
+    peer.peer.addEventListener("negotiationneeded", handleNegoNeeded);
+    return () => {
+      peer.peer.removeEventListener("negotiationneeded", handleNegoNeeded);
+    };
+  }, [handleNegoNeeded]);
+
+  useEffect(() => {
+    const handleTrack = (ev) => {
+      const [remStream] = ev.streams;
+      console.log("Got remote tracks!", remStream);
+      setRemoteStream(remStream); // Set the remote stream to the state
+    };
+  
+    peer.peer.addEventListener("track", handleTrack); // Listen for the 'track' event
+  
+    return () => {
+      peer.peer.removeEventListener("track", handleTrack);
+    };
+  }, []); 
+
+  useEffect(() => {
+    // Add signaling state change listener
+    peer.peer.addEventListener('signalingstatechange', () => {
+      console.log('Signaling state:', peer.peer.signalingState);
+    });
+
+    return () => {
+      peer.peer.removeEventListener('signalingstatechange', () => {
+        console.log('Signaling state:', peer.peer.signalingState);
+      });
+    };
+  }, [handleNegoNeeded]);
+
+  console.log(offer, negoOffer, answer, negoAnswer, remoteStream, myStream);
