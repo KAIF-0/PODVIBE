@@ -24,8 +24,8 @@ export default function Component({ params }) {
       appID,
       serverSecret,
       roomID,
-      uuidv4(),
-      "username",
+      userId,
+      username,
       720
     );
 
@@ -48,7 +48,7 @@ export default function Component({ params }) {
         },
       ],
       scenario: {
-        mode: ZegoUIKitPrebuilt.GroupCall, // To implement 1-on-1 calls, modify the parameter here to [ZegoUIKitPrebuilt.OneONoneCall].
+        mode: ZegoUIKitPrebuilt.OneONoneCall, // To implement 1-on-1 calls, modify the parameter here to [ZegoUIKitPrebuilt.OneONoneCall].
       },
     });
   };

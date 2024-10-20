@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist } from "zustand/middleware";
-import { AppwriteException, ID, Models } from "appwrite";
+import { AppwriteException, ID, Models, Query } from "appwrite";
 import { account, databases } from "@/config/client/appwrite";
 import env from "@/env";
 
@@ -26,18 +26,34 @@ export const useAuthStore = create(
           const userInfo = await account.get();
           console.log("USERINFO:  ", userInfo);
 
-          //saving in user db
-          await databases.createDocument(
+          const existingUser = await databases.listDocuments(
             env.APPWRITE_DATABASE_ID,
             env.APPWRITE_USER_COLLECTION_ID,
-            ID.unique(),
-            {
-              username,
-              email: userInfo.email,
-              provider: sessionInfo.provider,
-              userId: userInfo.$id,
-            }
+            [Query.equal("email", userInfo.email)]
           );
+
+          if (existingUser.documents.length > 0) {
+            // Update existing username
+            await databases.updateDocument(
+              env.APPWRITE_DATABASE_ID,
+              env.APPWRITE_USER_COLLECTION_ID,
+              existingUser.documents[0].$id,
+              { username }
+            );
+          } else {
+            // Create new document
+            await databases.createDocument(
+              env.APPWRITE_DATABASE_ID,
+              env.APPWRITE_USER_COLLECTION_ID,
+              ID.unique(),
+              {
+                username,
+                email: userInfo.email,
+                provider: sessionInfo.provider,
+                userId: userInfo.$id,
+              }
+            );
+          }
 
           set({
             email: userInfo.email,
@@ -60,6 +76,10 @@ export const useAuthStore = create(
 
       logout: async () => {
         try {
+          
+          const result = await account.deleteSession("current");
+          console.log(result);
+
           set({
             isLoading: false,
             isError: null,
@@ -69,13 +89,12 @@ export const useAuthStore = create(
             userId: null,
             username: null,
           });
-          const result = await account.deleteSession("current");
-          console.log(result);
           return {
             success: true,
           };
+
         } catch (error) {
-          console.log("Error logging out!");
+          console.log("Error logging out!", error);
           return {
             success: false,
           };

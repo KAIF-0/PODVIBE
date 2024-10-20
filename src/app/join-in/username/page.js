@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import { account, databases } from "@/config/client/appwrite";
@@ -9,8 +9,7 @@ import env from "@/env";
 import toast, { Toaster } from "react-hot-toast";
 import { Spinner } from "flowbite-react";
 
-
-function UsernameFormContent() {
+export default function UsernameForm() {
   const [provider, setProvider] = useState(""); // either "github" or "google"
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLaoding, setisLoading] = useState(false);
@@ -59,7 +58,7 @@ function UsernameFormContent() {
 
         if (loginSuccess.success) {
           setisLoading(false);
-          router.push("/pod-room");
+          router.push("/");
         } else {  
           setisLoading(false);
           toast.error("Failed to login");
@@ -163,13 +162,5 @@ function UsernameFormContent() {
         <p>Loading...</p> // Add a loading state if needed
       )}
     </div>
-  );
-}
-
-export default function UsernameForm() {
-  return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <UsernameFormContent />
-    </Suspense>
   );
 }

@@ -1,20 +1,26 @@
-'use client'
-//object of function to legin user through google and github by appwrite
+'use client'  
 import { client, account } from "@/config/client/appwrite.js";
 import env from "@/env";
+import { OAuthProvider } from "appwrite";
 
-/**
- * Function to login using OAuth2
- * @param {string} provider - The OAuth provider (e.g., 'google' or 'github')
- * @returns {Promise<void>}
- */
 export const loginWithOAuth = async (provider) => {
 
   try {
-    const redirectURI = `${env.BASE_URL}/join-in/username?provider=${provider}`; // Redirect URI after login
-    //if user exist
+    const redirectURI = `${env.BASE_URL}/join-in/username?provider=${provider}`; 
     const redirectURI2 = `${env.BASE_URL}`;
-    await account.createOAuth2Session(provider, redirectURI, redirectURI2);
+    const customGoogleOAuthURL = `${redirectURI}&prompt=select_account`;
+
+    // OAuth session creation
+    switch (provider) {
+      case 'google':
+        await account.createOAuth2Session(OAuthProvider.Google, customGoogleOAuthURL, redirectURI2);
+        break;
+      case 'github':
+        await account.createOAuth2Session(OAuthProvider.Github, customGoogleOAuthURL, redirectURI2);
+        break;
+      default:
+        throw new Error("Unsupported provider");
+    }
   } catch (error) {
     console.error("Login failed:", error);
     console.log("Login error: ", error.message); // Rethrow the error for handling in the calling function
