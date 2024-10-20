@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import { account, databases } from "@/config/client/appwrite";
@@ -9,7 +9,7 @@ import env from "@/env";
 import toast, { Toaster } from "react-hot-toast";
 import { Spinner } from "flowbite-react";
 
-export default function UsernameForm() {
+function UsernameForm() {
   const [provider, setProvider] = useState(""); // either "github" or "google"
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLaoding, setisLoading] = useState(false);
@@ -164,3 +164,15 @@ export default function UsernameForm() {
     </div>
   );
 }
+
+
+// Wrapping the component with Suspense
+const WrappedUsernameForm = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UsernameForm />
+    </Suspense>
+  );
+}
+
+export default WrappedUsernameForm;
