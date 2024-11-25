@@ -1,7 +1,6 @@
 import env from "@/env";
 import axios from "axios";
 import { NextResponse } from "next/server";
-import SetYtAuthToken from "@/app/auth/helper/setToken";
 import { cookies } from "next/headers";
 
 export async function GET(request) {

@@ -1,4 +1,3 @@
-import SetYtAuthToken from "@/app/auth/helper/setToken";
 import env from "@/env";
 import axios from "axios";
 import { cookies } from "next/headers";
@@ -21,7 +20,6 @@ export async function POST(request) {
     });
     const { access_token } = result.data;
     console.log("New Access Token:", access_token);
-    // SetYtAuthToken(access_token);
 
 
 
