@@ -19,6 +19,7 @@ export default function DiscoverPage() {
   }, []);
 
   const fetchStream = async () => {
+    await refreshYtToken();
     try {
       const { access_token } = ytCredential;
 
@@ -33,6 +34,7 @@ export default function DiscoverPage() {
         console.error("Error message:", err.message);
       }
       setLoading(false);
+      setStreams([])
     }
     setLoading(false);
   };

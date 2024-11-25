@@ -15,7 +15,7 @@ import Link from "next/link";
 import fetchStreams from "../auth/helper/fetchStreams";
 import { useAuthStore } from "../auth/store/authStore";
 import Image from "next/image";
-import profile from '@/assets/profile.jpg'
+import profile from "@/assets/profile.jpg";
 
 export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState(null);
@@ -24,28 +24,36 @@ export default function ProfilePage() {
   const { user, username } = useAuthStore();
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const mockUserInfo = {
-        username: "JohnDoe",
-        avatar: "/placeholder.svg?height=200&width=200",
-        followers: 1500,
-        following: 250,
-        totalViews: 50000,
-      };
-
-      await fetchStreams().then((e) => {
-        // console.log("USER STREAMS: ", e.streams);
-        setUserStreams(e.streams);
-      });
-
-      setUserInfo(mockUserInfo);
+    try {
+      fetchUserData();
+    } catch (error) {
+      console.log(error);
       setLoading(false);
+    }
+  }, []);
+
+  const fetchUserData = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const mockUserInfo = {
+      username: "JohnDoe",
+      avatar: "/placeholder.svg?height=200&width=200",
+      followers: 1500,
+      following: 250,
+      totalViews: 50000,
     };
 
-    fetchUserData();
-  }, []);
+    await fetchStreams().then((e) => {
+      // console.log("USER STREAMS: ", e.streams);
+      setUserStreams(e.streams);
+    }).catch((err)=>{
+      console.error("Error fetching streams: ", err);
+      setLoading(false);
+    })
+
+    setUserInfo(mockUserInfo);
+    setLoading(false);
+  };
 
   const container = {
     hidden: { opacity: 0 },
