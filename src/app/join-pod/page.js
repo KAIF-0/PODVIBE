@@ -18,15 +18,10 @@ export default function PodvibeJoin() {
   };
 
   return (
-    <div className="min-h-screen">
-      <nav className="relative z-20 flex justify-between items-center p-4 bg-black shadow-2xl bg-opacity-50">
-        <Link href="/">
-          <h1 className="text-2xl text-white font-bold">PodVibe</h1>
-        </Link>
-      </nav>
-      <div className="flex flex-col items-center justify-center min-h-screen  text-white p-4">
+    <>
+      <div className="flex flex-col items-center justify-center mt-32  text-white p-4">
         <motion.div
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 z-0 h-full"
           initial={{
             background:
               "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
@@ -128,43 +123,7 @@ export default function PodvibeJoin() {
             </motion.form>
           </motion.div>
         </motion.div>
-
-        {[...Array(5)].map((_, index) => (
-          <motion.div
-            key={index}
-            className="absolute text-white opacity-20"
-            initial={{
-              x: `${Math.random() * 100}vw`,
-              y: `${Math.random() * 100}vh`,
-            }}
-            animate={{
-              x: `${Math.random() * 100}vw`,
-              y: `${Math.random() * 100}vh`,
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 8a6 6 0 0 0-6-6 6 6 0 0 0-6 6v12a6 6 0 0 0 6 6 6 6 0 0 0 6-6V8z"></path>
-              <path d="M6 9a6 6 0 0 1 6-6 6 6 0 0 1 6 6"></path>
-              <path d="M6 15a6 6 0 0 0 6 6 6 6 0 0 0 6-6"></path>
-            </svg>
-          </motion.div>
-        ))}
       </div>
-    </div>
+    </>
   );
 }

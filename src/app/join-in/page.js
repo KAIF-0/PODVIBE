@@ -16,7 +16,7 @@ const JoinPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden  text-white">
+    <div className="relative min-h-screen overflow-hidden text-white">
       <motion.div
         className="absolute inset-0 z-0"
         initial={{

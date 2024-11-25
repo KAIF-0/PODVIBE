@@ -8,6 +8,10 @@ import { Query } from "appwrite";
 import env from "@/env";
 import toast, { Toaster } from "react-hot-toast";
 import { Spinner } from "flowbite-react";
+import { FaGoogle, FaGithub } from "react-icons/fa";
+import google from "@/assets/google.png";
+import github from "@/assets/github.png";
+import Image from "next/image";
 
 function UsernameForm() {
   const [provider, setProvider] = useState(""); // either "github" or "google"
@@ -27,11 +31,14 @@ function UsernameForm() {
       setIsLoggedIn(true);
     }
     console.log(user);
-    account.get('current').then((res)=>{
-      console.log(res);
-    }).catch((err)=>{
-      console.log(err);
-    })
+    account
+      .get("current")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [searchParams]);
 
   const handleSubmit = async (e) => {
@@ -59,7 +66,7 @@ function UsernameForm() {
         if (loginSuccess.success) {
           setisLoading(false);
           router.push("/");
-        } else {  
+        } else {
           setisLoading(false);
           toast.error("Failed to login");
         }
@@ -71,7 +78,7 @@ function UsernameForm() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-transparent text-white">
+    <div className="flex mt-32 mx-3  items-center justify-center bg-transparent text-white">
       <Toaster />
       <motion.div
         className="absolute inset-0 z-0"
@@ -112,18 +119,22 @@ function UsernameForm() {
               transition={{ duration: 0.5 }}
               className="mb-8"
             >
-              <motion.img
-                src={`/${provider}-logo.png`} // Place your google-logo.png and github-logo.png in public folder
-                alt={`${provider} logo`}
-                className="h-24 w-24 mx-auto"
+              <motion.div
                 initial={{ rotate: 0 }}
-                animate={{ rotate: [0, 360] }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
+                className="w-48 h-48 mx-auto"
+              >
+                <Image
+                  width={50}
+                  height={50}
+                  quality={100}
+                  layout="fixed"
+                  src={provider == 'google' ? google : github} 
+                  alt="Rotating"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              </motion.div>
               <p className="text-xl mt-4 font-semibold">
                 Logged in with {provider}!
               </p>
@@ -153,7 +164,14 @@ function UsernameForm() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
               >
-                {isLaoding ? (<div className="space-x-2"><Spinner aria-label="Default status example" /><span>Loading...</span></div>) : "Submit"}
+                {isLaoding ? (
+                  <div className="space-x-2">
+                    <Spinner aria-label="Default status example" />
+                    <span>Loading...</span>
+                  </div>
+                ) : (
+                  "Submit"
+                )}
               </motion.button>
             </form>
           </motion.div>
@@ -165,7 +183,6 @@ function UsernameForm() {
   );
 }
 
-
 // Wrapping the component with Suspense
 const WrappedUsernameForm = () => {
   return (
@@ -173,6 +190,6 @@ const WrappedUsernameForm = () => {
       <UsernameForm />
     </Suspense>
   );
-}
+};
 
 export default WrappedUsernameForm;

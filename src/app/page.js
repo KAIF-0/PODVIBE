@@ -14,30 +14,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar } from "flowbite-react";
 import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import Navbar from "@/components/navbar";
+
 const HomePage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false); // You'll need to implement actual auth logic
-  const { isLoggedIn, logout } = useAuthStore();
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  
+  const router = useRouter();
 
   useEffect(() => {
     setIsLoaded(true);
-    // Check if user is logged in here
-    // setIsLoggedIn(true); // Uncomment and implement actual auth check
   }, []);
-
-  const handleLogout = async () => {
-    const loggingOut = await logout();
-    console.log(loggingOut);
-    if (loggingOut.success) {
-      toast.success("Logged Out!");
-    } else {
-      toast.error("Failed to Log Out");
-    }
-  };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      <Toaster/>
+      <Navbar/>
+      <Toaster />
       <motion.div
         className="absolute inset-0 z-0"
         initial={{
@@ -60,49 +54,6 @@ const HomePage = () => {
           ease: "linear",
         }}
       />
-
-      {/* Navbar */}
-      <nav className="relative z-20 flex justify-between items-center p-4 bg-black bg-opacity-50">
-        <Link href="/">
-          <h1 className="text-2xl font-bold">PodVibe</h1>
-        </Link>
-        {isLoggedIn ? (
-          <div className="text-xl">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Avatar
-                  img="/images/people/profile-picture-5.jpg"
-                  bordered
-                  color="light"
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href="/profile">Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/explore">Explore</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/join-pod">Join Podcast</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <div onClick={handleLogout}>Sign Out</div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        ) : (
-          <Link href="/join-in">
-            <button className="bg-white text-black py-2 px-4 rounded-full hover:bg-gray-200 transition-colors">
-              Join In
-            </button>
-          </Link>
-        )}
-      </nav>
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -132,7 +83,7 @@ const HomePage = () => {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+          className="flex flex-col md:flex-row gap-5"
         >
           <Link href="/discover">
             <motion.button
@@ -150,6 +101,15 @@ const HomePage = () => {
               className="bg-white text-black py-3 px-6 rounded-full text-lg font-semibold transition-all duration-300 hover:bg-gray-200"
             >
               Get Starded with PodVibe
+            </motion.button>
+          </Link>
+          <Link href="/start-stream">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-black py-3 px-6 rounded-full text-lg font-semibold transition-all duration-300 hover:bg-gray-200"
+            >
+              Start Stream
             </motion.button>
           </Link>
         </motion.div>

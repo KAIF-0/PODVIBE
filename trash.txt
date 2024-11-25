@@ -1,0 +1,36 @@
+.catch((err) => {
+      if (err.response) {
+        console.error("Error response data:", err.response.data);
+      } else {
+        console.error("Error message:", err.message);
+      }
+    });
+
+
+
+
+    BIND {
+  kind: 'youtube#liveBroadcast',
+  etag: 'Sg06eKbh3U2wZ5LoN8FDsAmkD08',
+  id: '7x_6T8inpcA',
+  contentDetails: {
+    boundStreamId: 'f4ZkBvECA4AR0yaqWjOx_Q1730912506213074',  
+    boundStreamLastUpdateTimeMs: '2024-11-06T17:01:46Z',
+    monitorStream: {
+      enableMonitorStream: true,
+      broadcastStreamDelayMs: 0,
+      embedHtml: '<iframe width="425" height="344" src="https://www.youtube.com/embed/7x_6T8inpcA?autoplay=1&livemonitor=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'
+    },
+    enableEmbed: true,
+    enableDvr: true,
+    enableContentEncryption: false,
+    recordFromStart: true,
+    enableClosedCaptions: false,
+    closedCaptionsType: 'closedCaptionsDisabled',
+    enableLowLatency: false,
+    latencyPreference: 'normal',
+    projection: 'rectangular',
+    enableAutoStart: false,
+    enableAutoStop: false
+  }
+}

@@ -54,7 +54,7 @@ export default function Component({ params }) {
   };
   return (
     <>
-      <motion.div
+      {/* <motion.div
         className="absolute inset-0 z-0"
         initial={{
           background:
@@ -75,7 +75,7 @@ export default function Component({ params }) {
           repeatType: "reverse",
           ease: "linear",
         }}
-      />
+      /> */}
       <div
         className="myCallContainer"
         ref={myMeeting}
