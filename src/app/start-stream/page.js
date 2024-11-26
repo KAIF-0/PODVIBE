@@ -27,6 +27,7 @@ export default function Component() {
     isYtJoined,
     startStream: setStreamStarted,
     isStreaming,
+    userId,
   } = useAuthStore();
 
   useEffect(() => {
@@ -91,7 +92,10 @@ export default function Component() {
                     })
                     .then(async (e) => {
                       console.log("STREAM DETAILS:", e.data);
-                      socket.emit("streamKey", e.data.streamKey);
+                      socket.emit("streamKey", {
+                        streamKey: e.data.streamKey,
+                        userId: userId,
+                      });
                       await new Promise((resolve) => setTimeout(resolve, 2000));
                       await startStream();
                       toast.loading(
@@ -121,8 +125,14 @@ export default function Component() {
             });
         });
     } catch (error) {
-      console.log(error.message);
-      toast.error("Stream Failed!");
+      if (
+        error.response &&
+        error.response.data.message === "You are not enabled for live streaming"
+      ) {
+        toast.error("Please enable live streaming on Youtube!");
+      }
+      console.log(error.response);
+      toast.error("Stream Failed! Try again later...");
       setIsLoading(false);
     }
     setIsLoading(false);
@@ -162,7 +172,7 @@ export default function Component() {
 
       mediaRecorder.ondataavailable = (e) => {
         // console.log("Binary data: ", e.data);
-        socket.emit("streamData", e.data);
+        socket.emit("streamData", { userId: userId, streamData: e.data });
       };
     } catch (error) {
       console.log("ERROR: ", error);
@@ -269,7 +279,7 @@ export default function Component() {
           <Button
             type="submit"
             className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 transform hover:scale-[1.02]"
-            disabled={isLoading}
+            disabled={isLoading && isStreaming}
           >
             <Youtube className="w-5 h-5 mr-2" />
             {isLoading ? "Starting Stream..." : "Start YouTube Stream"}

@@ -1,9 +1,16 @@
 import axios from "axios";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const { access_token, title } = await request.json();
+    const { access_token: tokenA, title } = await request.json();
+
+    const cookieStore = cookies();
+    const tokenB = cookieStore.get("refresh_token").value;
+
+    const access_token = tokenA || tokenB;
+
     const newTitle = title + " | PODVIBE";
     const response = await axios.post(
       "https://www.googleapis.com/youtube/v3/liveStreams?part=snippet,cdn",

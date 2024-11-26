@@ -33,13 +33,6 @@ export async function GET(request) {
           maxResults: 6
         },
       })
-      .catch((err) => {
-        if (err.response) {
-          console.error("Error response data:", err.response.data);
-        } else {
-          console.error("Error message:", err.message);
-        }
-      });
 
     return NextResponse.json(response.data, {
       status: 200,

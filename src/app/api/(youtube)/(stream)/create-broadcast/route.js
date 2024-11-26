@@ -1,36 +1,36 @@
 import axios from "axios";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const { access_token, title, description } = await request.json();
+    const { access_token: tokenA, title, description } = await request.json();
+
+    //in case ki access_token is null from frontend
+    const cookieStore = cookies();
+    const tokenB = cookieStore.get("refresh_token").value;
+
+    const access_token = tokenA || tokenB;
+
     // console.log(access_token);
     const newTitle = title + " | PODVIBE";
-    const response = await axios
-      .post(
-        "https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet,status",
-        {
-          snippet: {
-            title: newTitle.toString(),
-            description,
-            scheduledStartTime: new Date().toISOString(),
-          },
-          status: { privacyStatus: "private", selfDeclaredMadeForKids: true },
+    const response = await axios.post(
+      "https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet,status",
+      {
+        snippet: {
+          title: newTitle.toString(),
+          description,
+          scheduledStartTime: new Date().toISOString(),
         },
-        {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .catch((err) => {
-        if (err.response) {
-          console.error("Error response data:", err.response.data);
-        } else {
-          console.error("Error message:", err.message);
-        }
-      });
+        status: { privacyStatus: "private", selfDeclaredMadeForKids: true },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     return NextResponse.json(
       {

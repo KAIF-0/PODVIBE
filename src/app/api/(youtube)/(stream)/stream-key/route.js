@@ -1,10 +1,17 @@
 // app/api/get-stream-details/route.js
 import { NextResponse } from "next/server";
 import axios from "axios";
+import { cookies } from "next/headers";
 
 export async function POST(request) {
   try {
-    const { access_token, boundStreamId } = await request.json();
+    const { access_token:tokenA, boundStreamId } = await request.json();
+
+    const cookieStore = cookies();
+    const tokenB = cookieStore.get("refresh_token").value;
+
+    const access_token = tokenA || tokenB;
+
     const response = await axios.get(
       "https://www.googleapis.com/youtube/v3/liveStreams",
       {

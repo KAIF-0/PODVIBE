@@ -14,7 +14,8 @@ import Link from "next/link";
 import axios from "axios";
 import env from "@/env";
 import toast, { Toaster } from "react-hot-toast";
-import profile from '@/assets/profile.jpg'
+import profile from "@/assets/profile.jpg";
+import { Loader2, Search, Menu } from "lucide-react";
 
 export default function Navbar() {
   const {
@@ -26,8 +27,10 @@ export default function Navbar() {
     isYtJoined,
     isStreaming,
     endStream,
+    userId,
   } = useAuthStore();
   const [showEndStream, setShowEndStream] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = async () => {
     const loggingOut = await logout();
@@ -40,10 +43,12 @@ export default function Navbar() {
   };
 
   const handleEndStream = async () => {
+    setIsLoading(true);
     try {
       console.log("Stream has ended!");
       const { access_token, broadcastId } = ytCredential;
       console.log(access_token, broadcastId);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
 
       await axios
         .post("/api/end-stream", {
@@ -52,19 +57,26 @@ export default function Navbar() {
         })
         .then(async (e) => {
           console.log("Stream Ended!");
-          await endStream(access_token);
           toast.success("Stream Ended!");
+          await endStream(access_token);
+          setIsLoading(false);
+          setShowEndStream(false);
+
+          //killing FFmpeg Process
           await axios
-            .delete(`${env.STREAM_SERVER_URL}/end-stream`)
+            .delete(`${env.STREAM_SERVER_URL}/end-stream/${userId}`)
             .then((e) => {
               console.log("FFmpeg Process Killed!");
             })
             .catch((err) => {
-              console.lof("Error Killing FFmpeg Process: ", err);
+              console.log("Error Killing FFmpeg Process: ", err);
             });
         });
+
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
       toast.error("Oops! Something went wrong");
     }
   };
@@ -91,8 +103,13 @@ export default function Navbar() {
                 <button
                   className="bg-red-600 text-white py-2 px-4 rounded-full font-bold shadow-lg hover:bg-red-800 transition-colors"
                   onClick={handleEndStream}
+                  disabled={isLoading}
                 >
-                  End Stream
+                  {isLoading ? (
+                    <Loader2 className="w-8 h-7 animate-spin" />
+                  ) : (
+                    "End Stream "
+                  )}
                 </button>
               )}
             </>
@@ -102,7 +119,7 @@ export default function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <Avatar
-                    img='https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o='
+                    img="https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="
                     bordered
                     color="light"
                   />

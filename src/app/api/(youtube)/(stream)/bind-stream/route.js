@@ -1,9 +1,16 @@
 import axios from "axios";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const { broadcastId, streamId, access_token } = await request.json();
+    const { broadcastId, streamId, access_token: tokenA } = await request.json();
+
+    //in case ki access_token is null from frontend
+    const cookieStore = cookies();
+    const tokenB = cookieStore.get("refresh_token").value;
+
+    const access_token = tokenA || tokenB;
 
     const response = await axios.post(
       `https://www.googleapis.com/youtube/v3/liveBroadcasts/bind?id=${broadcastId}&part=id,contentDetails&streamId=${streamId}`,
