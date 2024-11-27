@@ -19,7 +19,6 @@ export default function DiscoverPage() {
   }, []);
 
   const fetchStream = async () => {
-    await refreshYtToken();
     try {
       const { access_token } = ytCredential;
 
