@@ -7,12 +7,13 @@ import Link from "next/link";
 import axios from "axios";
 import { useAuthStore } from "../auth/store/authStore";
 import fetchStreams from "@/app/auth/helper/fetchStreams.js";
+import { useStreamStore } from "../auth/store/streamStore";
 
 export default function DiscoverPage() {
   const [streams, setStreams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const { ytCredential, refreshYtToken } = useAuthStore();
+  const {ytCredential, refreshYtToken } = useStreamStore();
 
   useEffect(() => {
     fetchStream();

@@ -16,19 +16,20 @@ import env from "@/env";
 import toast, { Toaster } from "react-hot-toast";
 import profile from "@/assets/profile.jpg";
 import { Loader2, Search, Menu } from "lucide-react";
+import { useStreamStore } from "@/app/auth/store/streamStore";
 
 export default function Navbar() {
+  const { isLoggedIn, logout, userId } = useAuthStore();
   const {
-    isLoggedIn,
-    logout,
     storeYtToken,
     refreshYtToken,
     ytCredential,
     isYtJoined,
+    startStream: setStreamStarted,
     isStreaming,
     endStream,
-    userId,
-  } = useAuthStore();
+  } = useStreamStore();
+
   const [showEndStream, setShowEndStream] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 

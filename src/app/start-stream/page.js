@@ -12,23 +12,22 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { io } from "socket.io-client";
 import env from "@/env";
+import { useStreamStore } from "../auth/store/streamStore";
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [socket, setSocket] = useState(null);
+  const { isLoggedIn, logout, userId } = useAuthStore();
   const {
-    isLoggedIn,
-    logout,
     storeYtToken,
     refreshYtToken,
     ytCredential,
     isYtJoined,
     startStream: setStreamStarted,
     isStreaming,
-    userId,
-  } = useAuthStore();
+  } = useStreamStore();
 
   useEffect(() => {
     const socket = io(env.STREAM_SERVER_URL);
