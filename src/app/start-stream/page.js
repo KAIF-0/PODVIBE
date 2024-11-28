@@ -29,8 +29,8 @@ export default function Component() {
     startStream: setStreamStarted,
     isStreaming,
   } = useStreamStore();
-
-  const { isYtAuthenticated } = Cookies.get();
+  const ytAuthCookie = Cookies.get("isYtAuthenticated");
+  const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;
 
   useEffect(() => {
     const socket = io(env.STREAM_SERVER_URL);

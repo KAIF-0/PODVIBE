@@ -19,6 +19,9 @@ import { Loader2, Search, Menu } from "lucide-react";
 import { useStreamStore } from "@/app/auth/store/streamStore";
 import Cookies from "js-cookie";
 
+
+
+
 export default function Navbar() {
   const { isLoggedIn, logout, userId } = useAuthStore();
   const {
@@ -27,11 +30,12 @@ export default function Navbar() {
     ytCredential,
     startStream: setStreamStarted,
     isStreaming,
-    endStream,
+    endStream,  
   } = useStreamStore();
-  const { isYtAuthenticated } = Cookies.get();
   const [showEndStream, setShowEndStream] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const ytAuthCookie = Cookies.get("isYtAuthenticated");
+  const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;
 
   const handleLogout = async () => {
     const loggingOut = await logout();
