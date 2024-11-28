@@ -142,7 +142,7 @@ export default function Component() {
         toast.error("Please enable live streaming on Youtube!");
       }
       console.log(error.response);
-      toast.error("Stream Failed! Try again later...");
+      toast.error("Stream Failed! Try again...");
       setIsLoading(false);
       if (err.response && err.response.status === 500) {
         //trying refreshing token
@@ -154,6 +154,11 @@ export default function Component() {
 
   const startStream = async () => {
     try {
+      if (!navigator.mediaDevices.getDisplayMedia) {
+        toast.error("WebRTC is not supported in this browser!");
+        return;
+      }
+
       const displayStream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: false,
