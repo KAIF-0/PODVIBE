@@ -11,7 +11,7 @@ export async function GET(request) {
 
   if (!access_token) {
     return NextResponse.json(
-      { error: "Token is missing" },
+      { error: "User is not authenticated!" },
       {
         status: 401,
       }
