@@ -15,11 +15,11 @@ export async function GET(request) {
     );
   }
 
-
   //check if token exist
-  if (cookieStore.get("access_token") && cookieStore.get("refresh_token")) {
+  if (cookieStore.get("access_token") && cookieStore.get("refresh_token") && cookieStore.get("isYtAuthenticated")) {
     cookieStore.delete("access_token");
     cookieStore.delete("refresh_token");
+    cookieStore.delete("isYtAuthenticated");
     console.log("Existing tokens deleted from cookies!");
   } else {
     console.log("No existing tokens found in cookies!");
@@ -45,8 +45,13 @@ export async function GET(request) {
         expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
       });
       console.log("Token Saved in Cookies!");
-      console.log("Access Token:", access_token);
-      console.log("Refresh Token:", refresh_token);
+      // console.log("Access Token:", access_token);
+      // console.log("Refresh Token:", refresh_token);
+
+      //trigger for storing access & refresh tokens in database
+      cookieStore.set("isYtAuthenticated", true, {
+        expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
+      });
     })
     .catch((err) => {
       if (err.response) {

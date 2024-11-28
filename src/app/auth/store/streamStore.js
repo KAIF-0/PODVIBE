@@ -11,9 +11,8 @@ import Cookies from "js-cookie";
 export const useStreamStore = create(
   persist(
     immer((set) => ({
-      isYtJoined: false,
       isStreaming: false,
-      isCredentialSaved: false,
+      isCredentialStored: false,
       ytCredential: {
         access_token: null,
         broadcastId: null,
@@ -23,6 +22,11 @@ export const useStreamStore = create(
 
       storeYtToken: async () => {
         const userInfo = await account.get();
+        if (!userInfo) {
+          console.log("UserInfo not found!");
+          return;
+        }
+
         const { access_token, refresh_token } = Cookies.get();
         try {
           if (!access_token || !refresh_token) {
@@ -51,7 +55,7 @@ export const useStreamStore = create(
             });
 
           set({
-            isYtJoined: true,
+            isCredentialStored: true,
             ytCredential: {
               access_token: access_token,
               broadcastId: null,
@@ -65,6 +69,11 @@ export const useStreamStore = create(
       refreshYtToken: async () => {
         try {
           const userInfo = await account.get();
+          if (!userInfo) {
+            console.log("UserInfo not found!");
+            return;
+          }
+
           const userDoc = await databases.listDocuments(
             env.APPWRITE_DATABASE_ID,
             env.APPWRITE_YTCREDENTIALS_COLLECTION_ID,
@@ -72,7 +81,7 @@ export const useStreamStore = create(
           );
 
           if (!userDoc) {
-            console.log("User not found");
+            console.log("User not found!");
             return;
           }
 
@@ -98,7 +107,6 @@ export const useStreamStore = create(
             console.log("New Access Token:", access_token);
 
             set({
-              isYtJoined: true,
               ytCredential: {
                 access_token: access_token,
                 broadcastId: null,
@@ -121,7 +129,9 @@ export const useStreamStore = create(
               broadcastId: broadcastId,
             },
           });
-        } catch (error) {}
+        } catch (error) {
+            console.log("Start Stream Error:", error.message);
+        }
       },
 
       endStream: async (access_token) => {
@@ -133,7 +143,9 @@ export const useStreamStore = create(
               broadcastId: null,
             },
           });
-        } catch (error) {}
+        } catch (error) {
+            console.log("End Stream Error:", error.message);
+        }
       },
 
       setHydrated() {

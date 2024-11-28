@@ -16,12 +16,14 @@ import fetchStreams from "../auth/helper/fetchStreams";
 import { useAuthStore } from "../auth/store/authStore";
 import Image from "next/image";
 import profile from "@/assets/profile.jpg";
+import { useStreamStore } from "../auth/store/streamStore";
 
 export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState(null);
   const [userStreams, setUserStreams] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user, username } = useAuthStore();
+  const { refreshYtToken } = useStreamStore();
 
   useEffect(() => {
     try {
@@ -43,13 +45,19 @@ export default function ProfilePage() {
       totalViews: 50000,
     };
 
-    await fetchStreams().then((e) => {
-      // console.log("USER STREAMS: ", e.streams);
-      setUserStreams(e.streams);
-    }).catch((err)=>{
-      console.error("Error fetching streams: ", err);
-      setLoading(false);
-    })
+    await fetchStreams()
+      .then((e) => {
+        // console.log("USER STREAMS: ", e.streams);
+        setUserStreams(e.streams);
+      })
+      .catch(async (err) => {
+        console.error("Error fetching streams: ", err);
+        setLoading(false);
+        if (err.response && err.response.status === 500) {
+          //trying refreshing token
+          await refreshYtToken();
+        }
+      });
 
     setUserInfo(mockUserInfo);
     setLoading(false);

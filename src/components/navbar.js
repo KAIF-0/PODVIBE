@@ -17,6 +17,7 @@ import toast, { Toaster } from "react-hot-toast";
 import profile from "@/assets/profile.jpg";
 import { Loader2, Search, Menu } from "lucide-react";
 import { useStreamStore } from "@/app/auth/store/streamStore";
+import Cookies from "js-cookie";
 
 export default function Navbar() {
   const { isLoggedIn, logout, userId } = useAuthStore();
@@ -24,12 +25,11 @@ export default function Navbar() {
     storeYtToken,
     refreshYtToken,
     ytCredential,
-    isYtJoined,
     startStream: setStreamStarted,
     isStreaming,
     endStream,
   } = useStreamStore();
-
+  const { isYtAuthenticated } = Cookies.get();
   const [showEndStream, setShowEndStream] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -131,8 +131,13 @@ export default function Navbar() {
                   <DropdownMenuItem>
                     <Link href="/profile">Profile</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href="/api/oauth">Join Youtube</Link>
+                  <DropdownMenuItem className="flex items-center">
+                    <Link href="/api/oauth" className="flex items-center">
+                      Join Youtube
+                      {isYtAuthenticated && (
+                        <span className="ml-2 text-green-500">&#10003;</span> // Green check mark
+                      )}
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link href="/join-pod">Join Podcast</Link>

@@ -13,6 +13,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import env from "@/env";
 import { useStreamStore } from "../auth/store/streamStore";
+import Cookies from "js-cookie";
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,14 +25,18 @@ export default function Component() {
     storeYtToken,
     refreshYtToken,
     ytCredential,
-    isYtJoined,
+    isCredentialStored,
     startStream: setStreamStarted,
     isStreaming,
   } = useStreamStore();
 
+  const { isYtAuthenticated } = Cookies.get();
+
   useEffect(() => {
     const socket = io(env.STREAM_SERVER_URL);
     setSocket(socket);
+
+    console.log(isYtAuthenticated);
 
     return () => {
       socket.disconnect();
@@ -44,15 +49,21 @@ export default function Component() {
       toast.error("You must be logged in to stream your Podcast!");
       return;
     }
+
+    if (!isYtAuthenticated) {
+      toast.error(
+        "You must be authenticated with YouTube to stream your Podcast!"
+      );
+      return;
+    }
+
     setIsLoading(true);
     console.log(title, description);
 
     try {
-      if (!isYtJoined) {
+      if (!isCredentialStored) {
         await storeYtToken();
       }
-
-      await refreshYtToken();
 
       const { access_token } = ytCredential;
       await axios
@@ -133,6 +144,10 @@ export default function Component() {
       console.log(error.response);
       toast.error("Stream Failed! Try again later...");
       setIsLoading(false);
+      if (err.response && err.response.status === 500) {
+        //trying refreshing token
+        await refreshYtToken();
+      }
     }
     setIsLoading(false);
   };

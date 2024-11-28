@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 export async function GET(request) {
-
   //from cookies
   const cookieStore = cookies();
   const access_token = cookieStore.get("access_token").value;
@@ -22,17 +21,16 @@ export async function GET(request) {
   try {
     const url = "https://www.googleapis.com/youtube/v3/liveBroadcasts";
 
-    const response = await axios
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-        params: {
-          part: "snippet,contentDetails",
-          mine: true,
-          maxResults: 6
-        },
-      })
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      params: {
+        part: "snippet,contentDetails",
+        mine: true,
+        maxResults: 6,
+      },
+    });
 
     return NextResponse.json(response.data, {
       status: 200,

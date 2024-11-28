@@ -13,7 +13,7 @@ export default function DiscoverPage() {
   const [streams, setStreams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const {ytCredential, refreshYtToken } = useStreamStore();
+  const { ytCredential, refreshYtToken } = useStreamStore();
 
   useEffect(() => {
     fetchStream();
@@ -33,8 +33,14 @@ export default function DiscoverPage() {
       } else {
         console.error("Error message:", err.message);
       }
+
       setLoading(false);
-      setStreams([])
+      setStreams([]);
+
+      if (err.response && err.response.status === 500) {
+        //trying refreshing token
+        await refreshYtToken();
+      }
     }
     setLoading(false);
   };
