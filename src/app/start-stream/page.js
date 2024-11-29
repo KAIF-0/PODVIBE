@@ -14,9 +14,11 @@ import { io } from "socket.io-client";
 import env from "@/env";
 import { useStreamStore } from "../auth/store/streamStore";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [socket, setSocket] = useState(null);
@@ -46,7 +48,7 @@ export default function Component() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isLoggedIn) {
-      toast.error("You must be logged in to stream your Podcast!");
+      toast.error("You must be Logged-In to stream your Podcast!");
       return;
     }
 
@@ -62,7 +64,12 @@ export default function Component() {
 
     try {
       if (!isCredentialStored) {
-        await storeYtToken();
+        const storeToken = await storeYtToken();
+        if (storeToken && storeToken.message === "userSession expired!") {
+          await logout();
+          router.push("/join-in");
+          return;
+        }
       }
 
       const { access_token } = ytCredential;
@@ -134,19 +141,24 @@ export default function Component() {
                 });
             });
         });
-    } catch (error) {
+    } catch (err) {
       if (
-        error.response &&
-        error.response.data.message === "You are not enabled for live streaming"
+        err.response &&
+        err.response.data.message === "You are not enabled for live streaming"
       ) {
         toast.error("Please enable live streaming on Youtube!");
+        setIsLoading(false);
+        return;
       }
-      console.log(error.response);
       toast.error("Stream Failed! Try again...");
-      setIsLoading(false);
       if (err.response && err.response.status === 500) {
         //trying refreshing token
-        await refreshYtToken();
+        const refreshToken = await refreshYtToken();
+        if (refreshToken && refreshToken.message === "userSession expired!") {
+          toast.error("Your session has been expired! Please Login again...");
+          await logout();
+          router.push("/join-in?session=expired");
+        }
       }
     }
     setIsLoading(false);
@@ -298,7 +310,7 @@ export default function Component() {
           <Button
             type="submit"
             className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 transform hover:scale-[1.02]"
-            disabled={isLoading && isStreaming}
+            disabled={isLoading || isStreaming}
           >
             <Youtube className="w-5 h-5 mr-2" />
             {isLoading ? "Starting Stream..." : "Start YouTube Stream"}

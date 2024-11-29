@@ -17,12 +17,15 @@ import { useAuthStore } from "../auth/store/authStore";
 import Image from "next/image";
 import profile from "@/assets/profile.jpg";
 import { useStreamStore } from "../auth/store/streamStore";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState(null);
   const [userStreams, setUserStreams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user, username } = useAuthStore();
+  const router = useRouter();
+  const { user, username, logout } = useAuthStore();
   const { refreshYtToken } = useStreamStore();
 
   useEffect(() => {
@@ -55,7 +58,12 @@ export default function ProfilePage() {
         setLoading(false);
         if (err.response && err.response.status === 500) {
           //trying refreshing token
-          await refreshYtToken();
+          const refreshToken = await refreshYtToken();
+          if (refreshToken && refreshToken.message === "userSession expired!") {
+            toast.error("Your session has been expired! Please Login again...");
+            await logout();
+            router.push("/join-in?session=expired");
+          }
         }
       });
 
@@ -80,6 +88,7 @@ export default function ProfilePage() {
 
   return (
     <div className="text-white">
+      <Toaster />
       <motion.div
         className="absolute inset-0 z-0"
         initial={{

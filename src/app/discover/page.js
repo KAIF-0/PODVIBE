@@ -8,11 +8,15 @@ import axios from "axios";
 import { useAuthStore } from "../auth/store/authStore";
 import fetchStreams from "@/app/auth/helper/fetchStreams.js";
 import { useStreamStore } from "../auth/store/streamStore";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function DiscoverPage() {
   const [streams, setStreams] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const { logout } = useAuthStore();
   const { ytCredential, refreshYtToken } = useStreamStore();
 
   useEffect(() => {
@@ -39,7 +43,12 @@ export default function DiscoverPage() {
 
       if (err.response && err.response.status === 500) {
         //trying refreshing token
-        await refreshYtToken();
+        const refreshToken = await refreshYtToken();
+        if (refreshToken && refreshToken.message === "userSession expired!") {
+          toast.error("Your session has been expired! Please Login again...");
+          await logout();
+          router.push("/join-in?session=expired");
+        }
       }
     }
     setLoading(false);
@@ -71,6 +80,7 @@ export default function DiscoverPage() {
 
   return (
     <div className="text-white">
+      <Toaster />
       <motion.div
         className="absolute inset-0 z-0"
         initial={{

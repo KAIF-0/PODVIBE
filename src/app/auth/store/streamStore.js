@@ -24,7 +24,10 @@ export const useStreamStore = create(
         const userInfo = await account.get();
         if (!userInfo) {
           console.log("UserInfo not found!");
-          return;
+          return {
+            success: false,
+            message: "userSession expired!",
+          };
         }
 
         const { access_token, refresh_token } = Cookies.get();
@@ -71,7 +74,10 @@ export const useStreamStore = create(
           const userInfo = await account.get();
           if (!userInfo) {
             console.log("UserInfo not found!");
-            return;
+            return {
+              success: false,
+              message: "userSession expired!",
+            };
           }
 
           const userDoc = await databases.listDocuments(
@@ -130,7 +136,7 @@ export const useStreamStore = create(
             },
           });
         } catch (error) {
-            console.log("Start Stream Error:", error.message);
+          console.log("Start Stream Error:", error.message);
         }
       },
 
@@ -144,7 +150,7 @@ export const useStreamStore = create(
             },
           });
         } catch (error) {
-            console.log("End Stream Error:", error.message);
+          console.log("End Stream Error:", error.message);
         }
       },
 

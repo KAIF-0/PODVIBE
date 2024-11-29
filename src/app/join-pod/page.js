@@ -1,24 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "../auth/store/authStore";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function PodvibeJoin() {
   const [roomLink, setroomLink] = useState("");
+  const [uuid, setUuid] = useState("");
   const router = useRouter();
+  const { isLoggedIn } = useAuthStore();
+
+  useEffect(() => {
+    setUuid(uuidv4());
+  }, []);
 
   const handleJoin = (e) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      toast.error("You must be logged in to join a Podcast!");
+      return;
+    }
     router.push(`${roomLink}`);
   };
 
   return (
     <>
+      <Toaster />
       <div className="flex flex-col items-center justify-center mt-32  text-white p-4">
         <motion.div
           className="absolute inset-0 z-0 h-full"
@@ -111,14 +124,23 @@ export default function PodvibeJoin() {
                 </div>
               </motion.div>
               <motion.p
-                className="text-center hover:underline text-white"
+                className="text-center text-white"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 0.5 }}
               >
-                <Link href={`/join-pod/pod-room/${uuidv4()}`}>
-                  Or Create a Podcast
-                </Link>
+                {isLoggedIn ? (
+                  <Link
+                    className="hover:underline"
+                    href={`/join-pod/pod-room/${uuid}`}
+                  >
+                    Or Create a Podcast
+                  </Link>
+                ) : (
+                  <span className="animate-pulse text-red-500">
+                    You must be logged in to create a podcast!
+                  </span>
+                )}
               </motion.p>
             </motion.form>
           </motion.div>

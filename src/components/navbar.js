@@ -18,19 +18,18 @@ import profile from "@/assets/profile.jpg";
 import { Loader2, Search, Menu } from "lucide-react";
 import { useStreamStore } from "@/app/auth/store/streamStore";
 import Cookies from "js-cookie";
-
-
-
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const { isLoggedIn, logout, userId } = useAuthStore();
+  const router = useRouter();
   const {
     storeYtToken,
     refreshYtToken,
     ytCredential,
     startStream: setStreamStarted,
     isStreaming,
-    endStream,  
+    endStream,
   } = useStreamStore();
   const [showEndStream, setShowEndStream] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +41,7 @@ export default function Navbar() {
     console.log(loggingOut);
     if (loggingOut.success) {
       toast.success("Logged Out!");
+      router.push("/");
     } else {
       toast.error("Failed to Log Out");
     }

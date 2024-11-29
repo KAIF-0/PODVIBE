@@ -1,18 +1,17 @@
 "use client";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaGoogle, FaGithub } from "react-icons/fa";
-import { loginWithOAuth } from "@/app/auth/helper/helper"; // Import the helper function
-import { useRouter } from 'next/router';
+import { loginWithOAuth } from "@/app/auth/helper/helper";
 
 const JoinPage = () => {
   const handleGoogleLogin = async () => {
-    await loginWithOAuth('google'); // Call the login function for Google
+    await loginWithOAuth("google"); // Call the login function for Google
   };
 
   const handleGithubLogin = async () => {
-    await loginWithOAuth('github'); // Call the login function for GitHub
+    await loginWithOAuth("github"); // Call the login function for GitHub
   };
 
   return (
@@ -94,7 +93,8 @@ const JoinPage = () => {
           transition={{ delay: 1, duration: 1 }}
           className="mt-8 text-sm text-gray-400"
         >
-          By continuing, you agree to PodVibe&apos;s Terms of Service and Privacy Policy.
+          By continuing, you agree to PodVibe&apos;s Terms of Service and
+          Privacy Policy.
         </motion.p>
       </motion.div>
     </div>
