@@ -114,7 +114,11 @@ export default function Component() {
                         userId: userId,
                       });
                       await new Promise((resolve) => setTimeout(resolve, 2000));
-                      await startStream();
+                      const startStream = await startStream();
+                      if (startStream && startStream.error) {
+                        toast.error("WebRTC is not supported in this browser!");
+                        return;
+                      }
                       toast.loading(
                         "Broadcast started! Please wait to go live.",
                         {
@@ -167,8 +171,9 @@ export default function Component() {
   const startStream = async () => {
     try {
       if (!navigator.mediaDevices.getDisplayMedia) {
-        toast.error("WebRTC is not supported in this browser!");
-        return;
+        return {
+          error: "WebRTC not supported!",
+        };
       }
 
       const displayStream = await navigator.mediaDevices.getDisplayMedia({
