@@ -170,11 +170,7 @@ export default function Component() {
 
   const startStream = async () => {
     try {
-      if (!navigator.mediaDevices.getDisplayMedia) {
-        return {
-          error: "WebRTC not supported!",
-        };
-      }
+      
 
       const displayStream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
