@@ -15,13 +15,13 @@ import env from "@/env";
 import { useStreamStore } from "../auth/store/streamStore";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useSocket } from "@/config/sockets-config/socket";
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [socket, setSocket] = useState(null);
   const { isLoggedIn, logout, userId } = useAuthStore();
   const {
     storeYtToken,
@@ -31,19 +31,18 @@ export default function Component() {
     startStream: setStreamStarted,
     isStreaming,
   } = useStreamStore();
+  const socket = useSocket();
   const ytAuthCookie = Cookies.get("isYtAuthenticated");
   const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;
 
   useEffect(() => {
-    const socket = io(env.STREAM_SERVER_URL);
-    setSocket(socket);
+    if (!socket) {
+      console.log("Sockets not connected!");
+      return;
+    }
 
-    console.log(isYtAuthenticated);
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+    console.log(socket);
+  }, [socket]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

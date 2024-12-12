@@ -2,7 +2,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
-import { account, databases } from "@/config/client/appwrite";
+import { account, databases } from "@/config/appwrite-config/appwrite";
 import { useAuthStore } from "@/app/auth/store/authStore";
 import { Query } from "appwrite";
 import env from "@/env";
@@ -130,7 +130,7 @@ function UsernameForm() {
                   height={50}
                   quality={100}
                   layout="fixed"
-                  src={provider == 'google' ? google : github} 
+                  src={provider == "google" ? google : github}
                   alt="Rotating"
                   className="w-full h-full object-cover rounded-full"
                 />

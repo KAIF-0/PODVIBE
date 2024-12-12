@@ -100,7 +100,7 @@ const HomePage = () => {
               whileTap={{ scale: 0.95 }}
               className="bg-white text-black py-3 px-6 rounded-full text-lg font-semibold transition-all duration-300 hover:bg-gray-200"
             >
-              Get Starded with PodVibe
+              Get Starded with Podcast
             </motion.button>
           </Link>
           <Link href="/start-stream">

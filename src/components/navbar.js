@@ -19,6 +19,7 @@ import { Loader2, Search, Menu } from "lucide-react";
 import { useStreamStore } from "@/app/auth/store/streamStore";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useSocket } from "@/config/sockets-config/socket";
 
 export default function Navbar() {
   const { isLoggedIn, logout, userId } = useAuthStore();
@@ -35,6 +36,7 @@ export default function Navbar() {
   const [isLoading, setIsLoading] = useState(false);
   const ytAuthCookie = Cookies.get("isYtAuthenticated");
   const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;
+  const socket = useSocket();
 
   const handleLogout = async () => {
     const loggingOut = await logout();
@@ -53,8 +55,7 @@ export default function Navbar() {
       console.log("Stream has ended!");
       const { access_token, broadcastId } = ytCredential;
       console.log(access_token, broadcastId);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
+      await socket.emit("endStream", { userId: userId }); //killling FFmpeg Process
       await axios
         .post("/api/end-stream", {
           access_token,
@@ -66,16 +67,6 @@ export default function Navbar() {
           await endStream(access_token);
           setIsLoading(false);
           setShowEndStream(false);
-
-          //killing FFmpeg Process
-          await axios
-            .delete(`${env.STREAM_SERVER_URL}/end-stream/${userId}`)
-            .then((e) => {
-              console.log("FFmpeg Process Killed!");
-            })
-            .catch((err) => {
-              console.log("Error Killing FFmpeg Process: ", err);
-            });
         });
 
       setIsLoading(false);
