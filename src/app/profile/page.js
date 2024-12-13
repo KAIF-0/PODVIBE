@@ -19,6 +19,8 @@ import profile from "@/assets/profile.jpg";
 import { useStreamStore } from "../auth/store/streamStore";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
+import { cn } from "@/lib/utils";
 
 export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState(null);
@@ -87,29 +89,17 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="text-white">
+    <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-black text-white">
       <Toaster />
-      <motion.div
-        className="absolute inset-0 z-0"
-        initial={{
-          background:
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-        }}
-        animate={{
-          background: [
-            "radial-gradient(circle at 0% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 0% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-          ],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "linear",
-        }}
+      <AnimatedGridPattern
+        numSquares={30}
+        maxOpacity={0.3}
+        duration={5}
+        repeatDelay={0.5}
+        className={cn(
+          "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]",
+          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
+        )}
       />
 
       {/* Main Content */}
@@ -123,7 +113,7 @@ export default function ProfilePage() {
             {/* User Info */}
             <motion.div
               variants={item}
-              className="bg-transparent shadow-2xl rounded-lg p-6 mb-8"
+              className="bg-transparent shadow-2xl border-2 rounded-3xl p-6 mb-8"
             >
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                 <Image
@@ -168,7 +158,7 @@ export default function ProfilePage() {
                     key={stream.id}
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
-                    className="bg-transparent shadow-2xl rounded-lg overflow-hidden cursor-pointer group"
+                    className="bg-transparent border-2 rounded-xl shadow-2xl overflow-hidden cursor-pointer group"
                     onClick={() =>
                       window.open(
                         `https://youtube.com/watch?v=${stream.id}`,

@@ -12,6 +12,9 @@ import { FaGoogle, FaGithub } from "react-icons/fa";
 import google from "@/assets/google.png";
 import github from "@/assets/github.png";
 import Image from "next/image";
+import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 function UsernameForm() {
   const [provider, setProvider] = useState(""); // either "github" or "google"
@@ -78,33 +81,21 @@ function UsernameForm() {
   };
 
   return (
-    <div className="flex mt-32 mx-3  items-center justify-center bg-transparent text-white">
+    <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-black text-white">
       <Toaster />
-      <motion.div
-        className="absolute inset-0 z-0"
-        initial={{
-          background:
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-        }}
-        animate={{
-          background: [
-            "radial-gradient(circle at 0% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 0% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-          ],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "linear",
-        }}
+      <AnimatedGridPattern
+        numSquares={30}
+        maxOpacity={0.3}
+        duration={5}
+        repeatDelay={0.5}
+        className={cn(
+          "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]",
+          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
+        )}
       />
 
       {isLoggedIn ? (
-        <div className="w-full max-w-lg">
+        <div className="w-full max-w-lg border-white border-2 rounded-3xl">
           {/* Card container */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -177,7 +168,9 @@ function UsernameForm() {
           </motion.div>
         </div>
       ) : (
-        <p>Loading...</p> // Add a loading state if needed
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="w-10 h-10 animate-spin" />
+        </div>
       )}
     </div>
   );
@@ -186,7 +179,13 @@ function UsernameForm() {
 // Wrapping the component with Suspense
 const WrappedUsernameForm = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="w-10 h-10 animate-spin" />
+        </div>
+      }
+    >
       <UsernameForm />
     </Suspense>
   );

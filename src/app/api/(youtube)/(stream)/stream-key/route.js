@@ -5,12 +5,19 @@ import { cookies } from "next/headers";
 
 export async function POST(request) {
   try {
-    const { access_token:tokenA, boundStreamId } = await request.json();
+    const { access_token: tokenA, boundStreamId } = await request.json();
 
     const cookieStore = cookies();
-    const tokenB = cookieStore.get("refresh_token").value;
+    const tokenB = cookieStore.get("access_token").value;
 
     const access_token = tokenA || tokenB;
+
+    if (!access_token) {
+      return NextResponse.json(
+        { error: "Access token is required" },
+        { status: 400 }
+      );
+    }
 
     const response = await axios.get(
       "https://www.googleapis.com/youtube/v3/liveStreams",

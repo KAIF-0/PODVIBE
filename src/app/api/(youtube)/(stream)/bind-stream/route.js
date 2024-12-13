@@ -4,13 +4,24 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const { broadcastId, streamId, access_token: tokenA } = await request.json();
+    const {
+      broadcastId,
+      streamId,
+      access_token: tokenA,
+    } = await request.json();
 
     //in case ki access_token is null from frontend
     const cookieStore = cookies();
-    const tokenB = cookieStore.get("refresh_token").value;
+    const tokenB = cookieStore.get("access_token").value;
 
     const access_token = tokenA || tokenB;
+
+    if (!access_token) {
+      return NextResponse.json(
+        { error: "Access token is required" },
+        { status: 400 }
+      );
+    }
 
     const response = await axios.post(
       `https://www.googleapis.com/youtube/v3/liveBroadcasts/bind?id=${broadcastId}&part=id,contentDetails&streamId=${streamId}`,

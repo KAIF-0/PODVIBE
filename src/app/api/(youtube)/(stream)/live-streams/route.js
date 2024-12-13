@@ -8,13 +8,11 @@ export async function GET(request) {
   const cookieStore = cookies();
   const access_token = cookieStore.get("access_token").value;
   // console.log(access_token);
-
+  
   if (!access_token) {
     return NextResponse.json(
-      { error: "User is not authenticated!" },
-      {
-        status: 401,
-      }
+      { error: "Access token is required" },
+      { status: 400 }
     );
   }
 

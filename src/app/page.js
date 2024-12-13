@@ -17,11 +17,13 @@ import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Navbar from "@/components/navbar";
+import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
+import { cn } from "@/lib/utils";
 
 const HomePage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -30,29 +32,17 @@ const HomePage = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      <Navbar/>
+      <Navbar />
       <Toaster />
-      <motion.div
-        className="absolute inset-0 z-0"
-        initial={{
-          background:
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-        }}
-        animate={{
-          background: [
-            "radial-gradient(circle at 0% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 0% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-          ],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "linear",
-        }}
+      <AnimatedGridPattern
+        numSquares={30}
+        maxOpacity={0.3}
+        duration={5}
+        repeatDelay={0.5}
+        className={cn(
+          "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]",
+          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
+        )}
       />
 
       <motion.div

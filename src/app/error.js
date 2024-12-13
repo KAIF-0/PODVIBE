@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { RefreshCcw, Home } from "lucide-react";
+import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
+import { cn } from "@/lib/utils";
 
 export default function Error({ error, reset }) {
   useEffect(() => {
@@ -14,27 +16,15 @@ export default function Error({ error, reset }) {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center">
-      <motion.div
-        className="absolute inset-0 z-0"
-        initial={{
-          background:
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-        }}
-        animate={{
-          background: [
-            "radial-gradient(circle at 0% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 0% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-          ],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "linear",
-        }}
+      <AnimatedGridPattern
+        numSquares={30}
+        maxOpacity={0.3}
+        duration={5}
+        repeatDelay={0.5}
+        className={cn(
+          "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]",
+          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
+        )}
       />
       <div className="w-full max-w-3xl px-4 py-8 text-center">
         <motion.div
