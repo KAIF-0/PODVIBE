@@ -48,7 +48,7 @@ export async function GET(request) {
       // console.log("Access Token:", access_token);
       // console.log("Refresh Token:", refresh_token);
 
-      //trigger for storing access & refresh tokens in database
+      //triggger for storing access & refresh tokens in database
       cookieStore.set("isYtAuthenticated", true, {
         expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
       });

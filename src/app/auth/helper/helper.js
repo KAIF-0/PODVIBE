@@ -30,6 +30,6 @@ export const loginWithOAuth = async (provider) => {
     }
   } catch (error) {
     console.error("Login failed:", error);
-    console.log("Login error: ", error.message); // Rethrow the error for handling in the calling function
+    console.log("Login error: ", error.message); 
   }
 };
