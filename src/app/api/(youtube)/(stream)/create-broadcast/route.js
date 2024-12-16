@@ -6,7 +6,7 @@ export async function POST(request) {
   try {
     const { access_token: tokenA, title, description } = await request.json();
 
-    //in case ki access_token is null from frontend
+    //in case ki access_token is null 
     const cookieStore = cookies();
     const tokenB = cookieStore.get("access_token").value;
 
