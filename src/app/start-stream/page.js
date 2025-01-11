@@ -103,8 +103,8 @@ export default function Component() {
       await axios
         .post("/api/create-broadcast", {
           access_token: access_token,
-          title: title,
-          description: description,
+          title: title.trim(),
+          description: description.trim(),
         })
         .then(async (e) => {
           const { broadcastId } = e.data;
@@ -113,7 +113,7 @@ export default function Component() {
           await axios
             .post("/api/create-stream", {
               access_token: access_token,
-              title: title,
+              title: title.trim(),
             })
             .then(async (e) => {
               const { streamId } = e.data;
