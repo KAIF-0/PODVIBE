@@ -220,8 +220,8 @@ export default function Component() {
         alert("Media Recorder is not supported in this browser!");
       }
 
-      // 20ms pe frames jaenge
-      mediaRecorder.start(20);
+      // 10ms pe frames jaenge
+      mediaRecorder.start(10);
 
       mediaRecorder.ondataavailable = (e) => {
         // console.log("Binary data: ", e.data);
