@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 export async function GET(request) {
   //from cookies
   const cookieStore = cookies();
-  const access_token = cookieStore.get("access_token").value;
+  const access_token = cookieStore.get("access_token")?.value;
   // console.log(access_token);
   
   if (!access_token) {

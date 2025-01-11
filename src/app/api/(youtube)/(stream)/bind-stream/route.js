@@ -12,7 +12,7 @@ export async function POST(request) {
 
     //in case ki access_token is null from frontend
     const cookieStore = cookies();
-    const tokenB = cookieStore.get("access_token").value;
+    const tokenB = cookieStore.get("access_token")?.value;
 
     const access_token = tokenA || tokenB;
 

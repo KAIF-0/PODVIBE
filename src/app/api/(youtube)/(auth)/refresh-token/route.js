@@ -6,7 +6,17 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   // const { refresh_token } = await request.json();
   const cookieStore = cookies();
-  const refresh_token = cookieStore.get("refresh_token").value;
+  const refresh_token = cookieStore.get("refresh_token")?.value;
+
+  if (!refresh_token) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Refresh token is missing",
+      },
+      { status: 400 }
+    );
+  }
 
   console.log(refresh_token);
   const tokenEndpoint = "https://oauth2.googleapis.com/token";
@@ -21,8 +31,6 @@ export async function POST(request) {
     const { access_token } = result.data;
     console.log("New Access Token:", access_token);
 
-
-
     //update in cookies
     if (cookieStore.get("access_token")) {
       cookieStore.delete("access_token");
@@ -33,8 +41,6 @@ export async function POST(request) {
     });
     console.log("New access token set in cookies!");
 
-
-    
     return NextResponse.json({
       success: true,
       access_token: access_token,

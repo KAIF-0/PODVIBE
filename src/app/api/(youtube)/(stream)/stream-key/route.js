@@ -8,7 +8,7 @@ export async function POST(request) {
     const { access_token: tokenA, boundStreamId } = await request.json();
 
     const cookieStore = cookies();
-    const tokenB = cookieStore.get("access_token").value;
+    const tokenB = cookieStore.get("access_token")?.value;
 
     const access_token = tokenA || tokenB;
 

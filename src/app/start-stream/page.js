@@ -48,14 +48,40 @@ export default function Component() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (title.trim().length === 0 || description.trim().length === 0) {
+      toast.error("Title and description cannot be empty!");
+      return;
+    }
     if (!isLoggedIn) {
       toast.error("You must be Logged-In to stream your Podcast!");
       return;
     }
 
     if (!isYtAuthenticated) {
-      toast.error(
-        "You must be authenticated with YouTube to stream your Podcast!"
+      toast.custom(
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="flex items-center justify-between bg-white text-black p-4 rounded-xl shadow-lg border"
+          style={{ minWidth: "320px" }}
+        >
+          <div>
+            <h4 className="text-md font-bold text-black">
+              You are not authenticated with YouTube!
+            </h4>
+          </div>
+          <button
+            onClick={() => router.push("/api/oauth")}
+            className="ml-4 bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-md hover:bg-white hover:text-red-600 border hover:border-red-600"
+          >
+            Authenticate
+          </button>
+        </motion.div>,
+        {
+          duration: 10000,
+        }
       );
       return;
     }

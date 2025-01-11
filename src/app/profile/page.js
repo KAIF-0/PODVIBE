@@ -49,6 +49,7 @@ export default function ProfilePage() {
       following: 250,
       totalViews: 50000,
     };
+    setUserInfo(mockUserInfo);
 
     await fetchStreams()
       .then((e) => {
@@ -69,7 +70,6 @@ export default function ProfilePage() {
         }
       });
 
-    setUserInfo(mockUserInfo);
     setLoading(false);
   };
 
@@ -89,7 +89,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative flex flex-col items-center min-h-screen overflow-hidden bg-black text-white pt-5">
       <Toaster />
       <AnimatedGridPattern
         numSquares={30}
@@ -153,41 +153,48 @@ export default function ProfilePage() {
             <motion.div variants={item}>
               <h2 className="text-2xl font-bold mb-4">Recent Streams</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {userStreams.map((stream) => (
-                  <motion.div
-                    key={stream.id}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="bg-transparent border-2 rounded-xl shadow-2xl overflow-hidden cursor-pointer group"
-                    onClick={() =>
-                      window.open(
-                        `https://youtube.com/watch?v=${stream.id}`,
-                        "_blank"
-                      )
-                    }
-                  >
-                    <div className="relative">
-                      <img
-                        src={stream.thumbnail}
-                        alt={stream.title}
-                        className="w-full aspect-video object-cover"
-                      />
-                      <div className="absolute bottom-2 right-2 bg-red-600 px-2 py-1 rounded text-sm">
-                        {stream.viewerCount.toLocaleString()} views
+                {userStreams != 0 &&
+                  userStreams.map((stream) => (
+                    <motion.div
+                      key={stream.id}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="bg-transparent border-2 rounded-xl shadow-2xl overflow-hidden cursor-pointer group"
+                      onClick={() =>
+                        window.open(
+                          `https://youtube.com/watch?v=${stream.id}`,
+                          "_blank"
+                        )
+                      }
+                    >
+                      <div className="relative">
+                        <img
+                          src={stream.thumbnail}
+                          alt={stream.title}
+                          className="w-full aspect-video object-cover"
+                        />
+                        <div className="absolute bottom-2 right-2 bg-red-600 px-2 py-1 rounded text-sm">
+                          {stream.viewerCount.toLocaleString()} views
+                        </div>
                       </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg mb-1 line-clamp-2 group-hover:text-gray-300">
-                        {stream.title}
-                      </h3>
-                      <p className="text-gray-400 text-sm">
-                        Streamed on{" "}
-                        {new Date(stream.publishedAt).toLocaleString()}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
+                      <div className="p-4">
+                        <h3 className="font-semibold text-lg mb-1 line-clamp-2 group-hover:text-gray-300">
+                          {stream.title}
+                        </h3>
+                        <p className="text-gray-400 text-sm">
+                          Streamed on{" "}
+                          {new Date(stream.publishedAt).toLocaleString()}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
               </div>
+
+              {!loading && userStreams.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-xl text-gray-400">No streams found...</p>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}

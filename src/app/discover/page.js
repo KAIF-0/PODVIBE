@@ -131,49 +131,52 @@ export default function DiscoverPage() {
           animate="show"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 "
         >
-          {streams.map((stream) => (
-            <motion.div
-              key={stream.id}
-              variants={item}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-transparent border-white border-2 shadow-2xl p-2 rounded-xl overflow-hidden cursor-pointer group"
-              onClick={() =>
-                window.open(
-                  `https://youtube.com/watch?v=${stream.id}`,
-                  "_blank"
-                )
-              }
-            >
-              <div className="relative">
-                <img
-                  src={stream.thumbnail}
-                  alt={stream.title}
-                  className="w-full aspect-video object-cover rounded-lg"
-                />
-                <div className="absolute bottom-2 right-2 bg-red-600 px-2 py-1 rounded text-sm">
-                  {stream.viewerCount.toLocaleString()} Views
+          {streams != 0 &&
+            streams.map((stream) => (
+              <motion.div
+                key={stream.id}
+                variants={item}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-transparent border-white border-2 shadow-2xl p-2 rounded-xl overflow-hidden cursor-pointer group"
+                onClick={() =>
+                  window.open(
+                    `https://youtube.com/watch?v=${stream.id}`,
+                    "_blank"
+                  )
+                }
+              >
+                <div className="relative">
+                  <img
+                    src={stream.thumbnail}
+                    alt={stream.title}
+                    className="w-full aspect-video object-cover rounded-lg"
+                  />
+                  <div className="absolute bottom-2 right-2 bg-red-600 px-2 py-1 rounded text-sm">
+                    {stream.viewerCount.toLocaleString()} Views
+                  </div>
                 </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-lg mb-1 line-clamp-2 group-hover:text-gray-300">
-                  {stream.title}
-                </h3>
-                <div className="flex flex-row justify-between">
-                  <p className="text-gray-400 text-sm">{stream.description}</p>
-                  <p className="text-gray-700 text-sm">
-                    {new Date(stream.publishedAt).toLocaleString()}
-                  </p>
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg mb-1 line-clamp-2 group-hover:text-gray-300">
+                    {stream.title}
+                  </h3>
+                  <div className="flex flex-row justify-between">
+                    <p className="text-gray-400 text-sm">
+                      {stream.description}
+                    </p>
+                    <p className="text-gray-700 text-sm">
+                      {new Date(stream.publishedAt).toLocaleString()}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
         </motion.div>
 
         {/* Empty State */}
         {!loading && streams.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-400">No streams found</p>
+            <p className="text-xl text-gray-400">No streams found...</p>
           </div>
         )}
       </main>

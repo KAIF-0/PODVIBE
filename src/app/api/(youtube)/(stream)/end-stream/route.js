@@ -7,7 +7,7 @@ export async function POST(request) {
     const { broadcastId, access_token: tokenA } = await request.json();
 
     const cookieStore = cookies();
-    const tokenB = cookieStore.get("access_token").value;
+    const tokenB = cookieStore.get("access_token")?.value;
 
     const access_token = tokenA || tokenB;
     console.log(broadcastId, access_token);
