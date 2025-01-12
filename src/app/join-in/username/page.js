@@ -48,7 +48,7 @@ function UsernameForm() {
     e.preventDefault();
     setisLoading(true);
     console.log("Username submitted:", username);
-    if (!username) {
+    if (username.trim().length === 0) {
       toast.error("Please enter a username");
       setisLoading(false);
     }
