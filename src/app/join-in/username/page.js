@@ -49,14 +49,15 @@ function UsernameForm() {
     setisLoading(true);
     console.log("Username submitted:", username);
     if (username.trim().length === 0) {
-      toast.error("Please enter a username");
+      toast.error("Please enter a valid username!");
       setisLoading(false);
+      return;
     }
     try {
       const checkUsername = await databases.listDocuments(
         env.APPWRITE_DATABASE_ID,
         env.APPWRITE_USER_COLLECTION_ID,
-        [Query.equal("username", username)]
+        [Query.equal("username", username.trim())]
       );
       if (checkUsername.documents.length > 0) {
         toast.error("Username already exists!");
@@ -64,7 +65,7 @@ function UsernameForm() {
       } else {
         console.log("USER NAME SAVED");
 
-        const loginSuccess = await login(username);
+        const loginSuccess = await login(username.trim());
 
         if (loginSuccess.success) {
           setisLoading(false);
