@@ -37,6 +37,8 @@ export async function POST(request) {
       console.log("Existing access token deleted from cookies!");
     }
     cookieStore.set("access_token", access_token, {
+      path: "/",
+      secure: true,
       expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
     });
     console.log("New access token set in cookies!");

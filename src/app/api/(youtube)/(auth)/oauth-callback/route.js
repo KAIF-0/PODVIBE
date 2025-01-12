@@ -16,7 +16,11 @@ export async function GET(request) {
   }
 
   //check if token exist
-  if (cookieStore.get("access_token") && cookieStore.get("refresh_token") && cookieStore.get("isYtAuthenticated")) {
+  if (
+    cookieStore.get("access_token") &&
+    cookieStore.get("refresh_token") &&
+    cookieStore.get("isYtAuthenticated")
+  ) {
     cookieStore.delete("access_token");
     cookieStore.delete("refresh_token");
     cookieStore.delete("isYtAuthenticated");
@@ -39,9 +43,13 @@ export async function GET(request) {
     .then((result) => {
       const { access_token, refresh_token } = result.data;
       cookieStore.set("access_token", `${access_token}`, {
+        path: "/",
+        secure: true,
         expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
       });
       cookieStore.set("refresh_token", `${refresh_token}`, {
+        path: "/",
+        secure: true,
         expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
       });
       console.log("Token Saved in Cookies!");
@@ -50,6 +58,8 @@ export async function GET(request) {
 
       //triggger for storing access & refresh tokens in database
       cookieStore.set("isYtAuthenticated", true, {
+        path: "/",
+        secure: true,
         expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
       });
     })

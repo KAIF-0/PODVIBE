@@ -55,6 +55,12 @@ export const useAuthStore = create(
             );
           }
 
+          //just for middleware setup
+          Cookies.set("sessionToken", sessionInfo.$id, {
+            secure: true,
+            expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
+          });
+
           set({
             email: userInfo.email,
             isLoggedIn: true,
@@ -78,6 +84,8 @@ export const useAuthStore = create(
         try {
           const result = await account.deleteSession("current");
           console.log(result);
+
+          Cookies.remove("sessionToken");
 
           set({
             isLoading: false,
