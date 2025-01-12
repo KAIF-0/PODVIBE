@@ -173,7 +173,34 @@ export default function Component() {
         err.response &&
         err.response.data.message === "You are not enabled for live streaming"
       ) {
-        toast.error("Please enable live streaming on Youtube!");
+        toast.custom(
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="flex items-center justify-between bg-white text-black p-4 rounded-xl shadow-lg border"
+            style={{ minWidth: "320px" }}
+          >
+            <div>
+              <h4 className="text-md font-bold text-black">
+                Please enable live streaming on Youtube!
+              </h4>
+            </div>
+
+            <button
+              onClick={() =>
+                window.open("https://studio.youtube.com/channel/", "_blank")
+              }
+              className="ml-4 bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-md hover:bg-white hover:text-red-600 border hover:border-red-600"
+            >
+              Youtube Studio
+            </button>
+          </motion.div>,
+          {
+            duration: 10000,
+          }
+        );
         setIsLoading(false);
         return;
       }

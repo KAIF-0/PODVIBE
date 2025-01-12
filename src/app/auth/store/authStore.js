@@ -58,7 +58,7 @@ export const useAuthStore = create(
           //just for middleware setup
           Cookies.set("sessionToken", sessionInfo.$id, {
             secure: true,
-            expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
+            expires: 30,
           });
 
           set({
