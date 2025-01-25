@@ -38,7 +38,7 @@ export default function Component() {
   const socket = useSocket();
   const ytAuthCookie = Cookies.get("isYtAuthenticated");
   const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;
-  const { startRecording } = useMediaRecorder();
+  const { startRecording, stopRecording } = useMediaRecorder();
 
   useEffect(() => {
     if (!socket) {
@@ -267,7 +267,7 @@ export default function Component() {
 
   return (
     <>
-      <Navbar/>
+      <Navbar stopRecording={stopRecording}/>
       <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-black text-white">
         <Toaster />
         <AnimatedGridPattern

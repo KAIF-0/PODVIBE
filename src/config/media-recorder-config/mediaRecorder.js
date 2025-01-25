@@ -51,6 +51,7 @@ export const MediaRecorderProvider = ({ children }) => {
   }, []);
 
   const stopRecording = useCallback(async () => {
+    console.log("Recording Stopped!")
     mediaRecorderRef?.current?.stop();
     mediaRecorderRef.current = null;
 
