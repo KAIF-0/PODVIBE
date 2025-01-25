@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import { useSocket } from "@/config/sockets-config/socket";
 import { useMediaRecorder } from "@/config/media-recorder-config/mediaRecorder";
 
-export default function Navbar({ stopRecording }) {
+export default function Navbar() {
   const { isLoggedIn, logout, userId } = useAuthStore();
   const router = useRouter();
   const {
@@ -38,7 +38,7 @@ export default function Navbar({ stopRecording }) {
   const ytAuthCookie = Cookies.get("isYtAuthenticated");
   const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;
   const socket = useSocket();
-  // const {stopRecording} = useMediaRecorder();
+  const {stopRecording} = useMediaRecorder();
 
   const handleLogout = async () => {
     const loggingOut = await logout();

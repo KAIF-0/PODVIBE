@@ -267,7 +267,7 @@ export default function Component() {
 
   return (
     <>
-      <Navbar stopRecording={stopRecording} />
+      <Navbar/>
       <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-black text-white">
         <Toaster />
         <AnimatedGridPattern
