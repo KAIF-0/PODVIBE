@@ -281,7 +281,7 @@ export default function Component() {
       mediaRecorder.start(10);
 
       mediaRecorder.ondataavailable = (e) => {
-        // console.log("Binary data: ", e.data);
+        console.log("Binary data: ", e.data);
         socket.emit("streamData", { userId: userId, streamData: e.data });
       };
     } catch (error) {
