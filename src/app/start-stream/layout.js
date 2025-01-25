@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar";
 import { MediaRecorderProvider } from "@/config/media-recorder-config/mediaRecorder";
 import { Inter } from "next/font/google";
 import Link from "next/link";
@@ -11,10 +12,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <MediaRecorderProvider>
       <html lang="en">
+        <Navbar/>
         <body className={inter.className}>{children}</body>
       </html>
-    </MediaRecorderProvider>
   );
 }

@@ -55,7 +55,6 @@ export default function Navbar({stopRecording}) {
       console.log("Stream has ended!");
       const { access_token, broadcastId } = ytCredential;
       console.log(access_token, broadcastId);
-      await stopRecording();
       await socket.emit("endStream", { userId: userId }); //killling FFmpeg Process
       await axios
         .post("/api/end-stream", {

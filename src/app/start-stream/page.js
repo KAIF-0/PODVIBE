@@ -18,8 +18,6 @@ import { useRouter } from "next/navigation";
 import { useSocket } from "@/config/sockets-config/socket";
 import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
-import { useMediaRecorder } from "@/config/media-recorder-config/mediaRecorder";
-import Navbar from "@/components/navbar";
 
 export default function Component() {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +36,6 @@ export default function Component() {
   const socket = useSocket();
   const ytAuthCookie = Cookies.get("isYtAuthenticated");
   const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;
-  const { startRecording, stopRecording } = useMediaRecorder();
 
   useEffect(() => {
     if (!socket) {
@@ -147,7 +144,7 @@ export default function Component() {
                         userId: userId,
                       });
                       await new Promise((resolve) => setTimeout(resolve, 2000));
-                      await startRecording(socket, userId);
+                      await startRecording();
                       toast.custom(
                         <motion.div
                           initial={{ opacity: 0, y: -20 }}
@@ -250,6 +247,48 @@ export default function Component() {
     setIsLoading(false);
   };
 
+
+  const startRecording = async () => {
+    try {
+      const displayStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: false,
+      });
+
+      //if user audio stream not started
+      const audioStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false,
+      });
+      const combinedStream = new MediaStream([
+        ...displayStream.getVideoTracks(),
+        ...audioStream.getAudioTracks(),
+      ]);
+
+      console.log("Combined Stream:", combinedStream);
+
+      const mediaRecorder = new MediaRecorder(combinedStream, {
+        audioBitsPerSecond: 125000,
+        videoBitsPerSecond: 2500000,
+        framerate: 25,
+      });
+
+      if (!mediaRecorder) {
+        alert("Media Recorder is not supported in this browser!");
+      }
+
+      // 10ms pe frames jaenge
+      mediaRecorder.start(10);
+
+      mediaRecorder.ondataavailable = (e) => {
+        // console.log("Binary data: ", e.data);
+        socket.emit("streamData", { userId: userId, streamData: e.data });
+      };
+    } catch (error) {
+      console.log("ERROR: ", error);
+    }
+  };
+
   // const setStreamKey = async (key) => {
   //   // socket.emit("streamKey", key);
   //   await axios.post(`${env.STREAM_SERVER_URL}/set-streamKey`,{
@@ -267,7 +306,6 @@ export default function Component() {
 
   return (
     <>
-      <Navbar stopRecording={stopRecording}/>
       <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-black text-white">
         <Toaster />
         <AnimatedGridPattern
