@@ -20,8 +20,9 @@ import { useStreamStore } from "@/app/auth/store/streamStore";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/config/sockets-config/socket";
+import { useMediaRecorder } from "@/config/media-recorder-config/mediaRecorder";
 
-export default function Navbar() {
+export default function Navbar({ stopRecording }) {
   const { isLoggedIn, logout, userId } = useAuthStore();
   const router = useRouter();
   const {
@@ -37,6 +38,7 @@ export default function Navbar() {
   const ytAuthCookie = Cookies.get("isYtAuthenticated");
   const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;
   const socket = useSocket();
+  // const {stopRecording} = useMediaRecorder();
 
   const handleLogout = async () => {
     const loggingOut = await logout();
@@ -55,6 +57,7 @@ export default function Navbar() {
       console.log("Stream has ended!");
       const { access_token, broadcastId } = ytCredential;
       console.log(access_token, broadcastId);
+      await stopRecording();
       await socket.emit("endStream", { userId: userId }); //killling FFmpeg Process
       await axios
         .post("/api/end-stream", {
