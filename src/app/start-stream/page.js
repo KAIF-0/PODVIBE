@@ -38,7 +38,7 @@ export default function Component() {
   const socket = useSocket();
   const ytAuthCookie = Cookies.get("isYtAuthenticated");
   const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;
-  const { startRecording, stopRecording } = useMediaRecorder();
+  const { startRecording } = useMediaRecorder();
 
   useEffect(() => {
     if (!socket) {
