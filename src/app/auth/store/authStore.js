@@ -86,6 +86,7 @@ export const useAuthStore = create(
           console.log(result);
 
           Cookies.remove("sessionToken");
+          Cookies.remove("isYtAuthenticated");
 
           set({
             isLoading: false,
