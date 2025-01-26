@@ -305,7 +305,6 @@ export default function Component() {
   // };
 
   return (
-    <>
       <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-black text-white">
         <Toaster />
         <AnimatedGridPattern
@@ -407,6 +406,5 @@ export default function Component() {
           )}
         </motion.div>
       </div>
-    </>
   );
 }
