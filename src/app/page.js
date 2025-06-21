@@ -68,7 +68,7 @@ const ytAuthCookie = Cookies.get("isYtAuthenticated");
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative min-h-screen overflow-hidden bg-gray-900 text-white">
       <Navbar />
       <Toaster />
       <AnimatedGridPattern

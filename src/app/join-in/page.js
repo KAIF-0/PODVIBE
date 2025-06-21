@@ -17,7 +17,7 @@ const JoinPage = () => {
   };
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gray-900 text-white">
       <AnimatedGridPattern
         numSquares={30}
         maxOpacity={0.3}

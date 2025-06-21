@@ -305,7 +305,7 @@ export default function Component() {
   // };
 
   return (
-      <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-black text-white">
+      <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-gray-900 text-white">
         <Toaster />
         <AnimatedGridPattern
           numSquares={30}

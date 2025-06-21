@@ -78,7 +78,7 @@ export default function Navbar({stopRecording}) {
   };
 
   return (
-    <div className="bg-black border-b-2 rounded-b-xl">
+    <div className="bg-gray-900 border-b-2 rounded-b-xl">
       {/* Navbar */}
       <Toaster />
       <nav className="relative z-20 flex justify-between items-center p-3 bg-black shadow-2xl bg-opacity-50 md:px-28">

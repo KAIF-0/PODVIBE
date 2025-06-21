@@ -81,7 +81,7 @@ export default function DiscoverPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative flex min-h-screen overflow-hidden bg-gray-900 text-white">
       <Toaster />
       <AnimatedGridPattern
         numSquares={30}
@@ -164,7 +164,7 @@ export default function DiscoverPage() {
                     <p className="text-gray-400 text-sm">
                       {stream.description}
                     </p>
-                    <p className="text-gray-700 text-sm">
+                    <p className="text-gray-600 text-sm">
                       {new Date(stream.publishedAt).toLocaleString()}
                     </p>
                   </div>

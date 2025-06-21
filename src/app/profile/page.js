@@ -89,7 +89,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="relative flex flex-col items-center min-h-screen overflow-hidden bg-black text-white pt-5">
+    <div className="relative flex flex-col items-center min-h-screen overflow-hidden bg-gray-900 text-white pt-5">
       <Toaster />
       <AnimatedGridPattern
         numSquares={30}

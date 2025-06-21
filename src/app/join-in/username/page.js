@@ -82,7 +82,7 @@ function UsernameForm() {
   };
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gray-900 text-white">
       <Toaster />
       <AnimatedGridPattern
         numSquares={30}
@@ -118,8 +118,8 @@ function UsernameForm() {
                 className="w-48 h-48 mx-auto"
               >
                 <Image
-                  width={50}
-                  height={50}
+                  width={40}
+                  height={40}
                   quality={100}
                   layout="fixed"
                   src={provider == "google" ? google : github}

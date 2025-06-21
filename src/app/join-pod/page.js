@@ -32,7 +32,7 @@ export default function PodvibeJoin() {
   };
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-black text-white">
+    <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gray-900 text-white">
       <Toaster />
       <AnimatedGridPattern
         numSquares={30}

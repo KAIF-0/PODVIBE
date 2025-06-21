@@ -11,6 +11,8 @@ import { useAuthStore } from "../../../auth/store/authStore";
 import env from "@/env";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { v4 as uuidv4 } from "uuid";
+import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
+import { cn } from "@/lib/utils";
 
 export default function Component({ params }) {
   const { roomID } = params;
@@ -68,33 +70,23 @@ export default function Component({ params }) {
   };
   return (
     <>
-      {/* <motion.div
-        className="absolute inset-0 z-0"
-        initial={{
-          background:
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-        }}
-        animate={{
-          background: [
-            "radial-gradient(circle at 0% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 0%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 100% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 0% 100%, #ffffff 0%, #000000 100%)",
-            "radial-gradient(circle at 50% 50%, #ffffff 0%, #000000 100%)",
-          ],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "linear",
-        }}
-      /> */}
+    <div className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gray-900">
+     <AnimatedGridPattern
+             numSquares={30}
+             maxOpacity={0.3}
+             duration={5}
+             repeatDelay={0.5}
+             className={cn(
+               "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]",
+               "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
+             )}
+           />
       <div
         className="myCallContainer"
         ref={myMeeting}
         style={{ width: "100vw", height: "100vh" }}
       ></div>
+      </div>
     </>
   );
 }
