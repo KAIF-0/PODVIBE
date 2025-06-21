@@ -19,12 +19,49 @@ import axios from "axios";
 import Navbar from "@/components/navbar";
 import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
+import Cookies from "js-cookie";
 
 const HomePage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+const ytAuthCookie = Cookies.get("isYtAuthenticated");
+  const isYtAuthenticated = ytAuthCookie ? JSON.parse(ytAuthCookie) : false;  
   const router = useRouter();
+
+//custome routing to check auth first
+
+  const redirect = (path)=>{
+    if (!isYtAuthenticated) {
+          toast.custom(
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center justify-between bg-white text-black p-4 rounded-xl shadow-lg border"
+              style={{ minWidth: "320px" }}
+            >
+              <div>
+                <h4 className="text-md font-bold text-black">
+                  You are not authenticated with YouTube!
+                </h4>
+              </div>
+              <button
+                onClick={() => router.push("/api/oauth")}
+                className="ml-4 bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-md hover:bg-white hover:text-red-600 border hover:border-red-600"
+              >
+                Authenticate
+              </button>
+            </motion.div>,
+            {
+              duration: 2000,
+            }
+          );
+          return;
+        }
+    router.push(path);
+
+  }
 
   useEffect(() => {
     setIsLoaded(true);
@@ -75,7 +112,7 @@ const HomePage = () => {
           transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
           className="flex flex-col md:flex-row gap-5"
         >
-          <Link href="/discover">
+          <div onClick={() => redirect("/discover")}>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -83,7 +120,7 @@ const HomePage = () => {
             >
               Discover Podcasts
             </motion.button>
-          </Link>
+          </div>
           <Link href="/join-pod">
             <motion.button
               whileHover={{ scale: 1.05 }}

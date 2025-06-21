@@ -26,7 +26,7 @@ export async function GET(request) {
       params: {
         part: "snippet,contentDetails",
         mine: true,
-        maxResults: 6,
+        maxResults: 9,
       },
     });
 

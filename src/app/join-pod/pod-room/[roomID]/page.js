@@ -47,9 +47,23 @@ export default function Component({ params }) {
             roomID,
         },
       ],
-      scenario: {
-        mode: ZegoUIKitPrebuilt.OneONoneCall, // To implement 1-on-1 calls, modify the parameter here to [ZegoUIKitPrebuilt.OneONoneCall].
-      },
+            	turnOnMicrophoneWhenJoining: true,
+           	turnOnCameraWhenJoining: true,
+           	showMyCameraToggleButton: true,
+           	showMyMicrophoneToggleButton: true,
+           	showAudioVideoSettingsButton: false,
+           	showScreenSharingButton: false,
+           	showTextChat: false,
+           	showUserList: false,
+           	maxUsers: 2,
+           	layout: "Auto",
+           	showLayoutButton: false,
+           	scenario: {
+           		mode: "OneONoneCall",
+           		config: {
+           			role: "Host",
+         		},
+         	},
     });
   };
   return (
