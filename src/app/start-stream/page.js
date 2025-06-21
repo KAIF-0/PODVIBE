@@ -80,7 +80,7 @@ export default function Component() {
           </button>
         </motion.div>,
         {
-          duration: 10000,
+          duration: 5000,
         }
       );
       return;
