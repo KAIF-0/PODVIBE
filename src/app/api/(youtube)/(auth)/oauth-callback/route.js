@@ -45,12 +45,12 @@ export async function GET(request) {
       cookieStore.set("access_token", `${access_token}`, {
         path: "/",
         secure: true,
-        expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
+        expires: new Date(Date.now() + 60 * 60 * 1000 * 24), 
       });
       cookieStore.set("refresh_token", `${refresh_token}`, {
         path: "/",
         secure: true,
-        expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
+        expires: new Date(Date.now() + 60 * 60 * 1000 * 24),
       });
       console.log("Token Saved in Cookies!");
       // console.log("Access Token:", access_token);
@@ -60,7 +60,7 @@ export async function GET(request) {
       cookieStore.set("isYtAuthenticated", true, {
         path: "/",
         secure: true,
-        expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 30),
+        expires: new Date(Date.now() + 60 * 60 * 1000 * 24),
       });
     })
     .catch((err) => {

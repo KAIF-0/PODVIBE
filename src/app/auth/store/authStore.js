@@ -58,7 +58,7 @@ export const useAuthStore = create(
           //just for middleware setup
           Cookies.set("sessionToken", sessionInfo.$id, {
             secure: true,
-            expires: 30,
+            expires: 10,
           });
 
           set({
@@ -79,14 +79,39 @@ export const useAuthStore = create(
           };
         }
       },
+      checkSession: async () => {
+        try {
+          const sessionInfo = await account.getSession("current");
+          console.log("SESSION:  ", sessionInfo);
+
+          const userInfo = await account.get();
+          console.log("USERINFO:  ", userInfo);
+
+
+
+          //just for middleware setup
+          const token = await Cookies.get("sessionToken");
+          if (!token) {
+            throw new Error("Session token not found");
+          }
+
+          return {
+            success: true,
+          };
+        } catch (error) {
+          return {
+            success: false,
+          };
+        }
+      },
 
       logout: async () => {
         try {
-          const result = await account.deleteSession("current");
-          console.log(result);
 
           Cookies.remove("sessionToken");
           Cookies.remove("isYtAuthenticated");
+          Cookies.remove("access_token");
+          Cookies.remove("refresh_token");
 
           set({
             isLoading: false,
@@ -97,6 +122,10 @@ export const useAuthStore = create(
             userId: null,
             username: null,
           });
+
+
+          const result = await account.deleteSession("current");
+          console.log(result);
           return {
             success: true,
           };
@@ -115,8 +144,19 @@ export const useAuthStore = create(
     {
       name: "AuthSession",
       onRehydrateStorage() {
-        return (state, error) => {
-          if (!error) state?.setHydrated();
+        return async (state, error) => {
+          if (!error) {
+            await state.checkSession().then(async (result) => {
+              if (result.success) {
+                console.log(result);
+              } else {
+                console.log("Session check failed, logging out.");
+                await state.logout();
+              }
+            });
+          }
+          state?.setHydrated();
+
         };
       },
     }
