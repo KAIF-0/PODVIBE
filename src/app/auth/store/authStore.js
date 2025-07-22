@@ -90,15 +90,16 @@ export const useAuthStore = create(
 
 
           //just for middleware setup
-          const token = await Cookies.get("sessionToken");
-          if (!token) {
-            throw new Error("Session token not found");
-          }
+          // const token = await Cookies.get("sessionToken");
+          // if (!token) {
+          //   throw new Error("Session token not found");
+          // }
 
           return {
             success: true,
           };
         } catch (error) {
+          console.log("Error checking session:", error);
           return {
             success: false,
           };
