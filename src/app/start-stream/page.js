@@ -249,45 +249,84 @@ export default function Component() {
 
 
   const startRecording = async () => {
-    try {
-      const displayStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: false,
-      });
+  try {
+    const displayStream = await navigator.mediaDevices.getDisplayMedia({
+      video: {
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        frameRate: { ideal: 25 }
+      },
+      audio: false,
+    });
 
-      //if user audio stream not started
-      const audioStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: false,
-      });
-      const combinedStream = new MediaStream([
-        ...displayStream.getVideoTracks(),
-        ...audioStream.getAudioTracks(),
-      ]);
+    const audioStream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        sampleRate: 44100
+      },
+      video: false,
+    });
 
-      console.log("Combined Stream:", combinedStream);
+    const combinedStream = new MediaStream([
+      ...displayStream.getVideoTracks(),
+      ...audioStream.getAudioTracks(),
+    ]);
 
-      const mediaRecorder = new MediaRecorder(combinedStream, {
-        audioBitsPerSecond: 125000,
-        videoBitsPerSecond: 2500000,
-        framerate: 25,
-      });
+    console.log("Combined Stream:", combinedStream);
 
-      if (!mediaRecorder) {
-        alert("Media Recorder is not supported in this browser!");
+    const options = {
+      mimeType: 'video/webm;codecs=vp8,opus',
+      videoBitsPerSecond: 2500000,
+      audioBitsPerSecond: 128000,
+    };
+
+    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+      options.mimeType = 'video/webm;codecs=h264,opus';
+      if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        options.mimeType = 'video/webm';
       }
-
-      // 10ms pe frames jaenge
-      mediaRecorder.start(10);
-
-      mediaRecorder.ondataavailable = (e) => {
-        console.log("Binary data: ", e.data);
-        socket.emit("streamData", { userId: userId, streamData: e.data });
-      };
-    } catch (error) {
-      console.log("ERROR: ", error);
     }
-  };
+
+    const mediaRecorder = new MediaRecorder(combinedStream, options);
+
+    if (!mediaRecorder) {
+      alert("Media Recorder is not supported in this browser!");
+      return;
+    }
+
+    mediaRecorder.start(1000);
+
+    mediaRecorder.ondataavailable = async (e) => {
+      if (e.data && e.data.size > 0) {
+        console.log("Binary data size: ", e.data.size);
+        
+        const arrayBuffer = await e.data.arrayBuffer();
+        
+        socket.emit("streamData", { 
+          userId: userId, 
+          streamData: arrayBuffer 
+        });
+      }
+    };
+
+    mediaRecorder.onerror = (error) => {
+      console.error("MediaRecorder error:", error);
+    };
+
+    mediaRecorder.onstop = () => {
+      console.log("MediaRecorder stopped");
+      displayStream.getTracks().forEach(track => track.stop());
+      audioStream.getTracks().forEach(track => track.stop());
+    };
+
+    return mediaRecorder;
+
+  } catch (error) {
+    console.log("ERROR: ", error);
+    alert("Error starting recording: " + error.message);
+  }
+}
 
   // const setStreamKey = async (key) => {
   //   // socket.emit("streamKey", key);
